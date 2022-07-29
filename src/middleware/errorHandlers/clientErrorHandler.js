@@ -6,7 +6,11 @@ module.exports = (error, _req, res, next) => {
       message: error.name,
       details: error.message,
     });
-  } else if (process.env.DEBUG === 'true') {
+
+    return; // NOTE: no need to process those errors (yet?)
+  }
+
+  if (process.env.DEBUG === 'true') {
     // unhandled client error response with DEBUG flag
     res.status(500).json({
       message: error.name,

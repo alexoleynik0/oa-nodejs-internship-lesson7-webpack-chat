@@ -11,6 +11,7 @@ const prepareFrontend = (app) => {
   // eslint-disable-next-line no-param-reassign
   app.locals = {
     ...app.locals,
+    views_path: `${app.get('views')}/`,
     title: process.env.APP_NAME,
     appName: process.env.APP_NAME,
     styles: '',
@@ -37,6 +38,9 @@ module.exports = {
     router.get('/', (_req, res) => {
       res.render('pages/index.ejs');
     });
+    router.get('/login', (_req, res) => {
+      res.render('pages/login.ejs');
+    });
 
     // route not found
     router.use((_req, res) => {
@@ -49,5 +53,11 @@ module.exports = {
 
   static(app) {
     app.use('/static', expressStatic(path.join(__dirname, '../..', 'public')));
+    app.use(
+      '/static/css/normalize.css',
+      expressStatic(
+        path.join(__dirname, '../..', 'node_modules/normalize.css/normalize.css'),
+      ),
+    );
   },
 };

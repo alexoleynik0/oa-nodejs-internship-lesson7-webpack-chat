@@ -1,27 +1,20 @@
-<%- include('../partials/_layout_header', {
-  title: 'Dialogs - ' + appName,
-  scripts: '<script src="/static/js/chat.js" defer></script>',
-  } );
--%>
+<%- include(views_path + 'partials/_layout_header.ejs', { title: 'Dialogs - ' +
+appName, scripts: [{src: '/static/js/chat.js', attributes: 'defer'}] }); -%>
 
 <div class="container clearfix">
   <div class="people-list" id="people-list">
     <ul class="list">
       <li class="clearfix">
-        <img
-          src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg"
-          alt="avatar"
-        />
+        <%- include(views_path + 'components/user/avatar.ejs', { user: {_id:
+        123}, size: 55 }); -%>
         <div class="about">
           <div class="name">Vincent Porter</div>
         </div>
       </li>
 
       <li class="clearfix">
-        <img
-          src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg"
-          alt="avatar"
-        />
+        <%- include(views_path + 'components/user/avatar.ejs', { user: {_id:
+        23}, size: 55 }); -%>
         <div class="about">
           <div class="name">Aiden Chavez</div>
         </div>
@@ -31,10 +24,8 @@
 
   <div class="chat">
     <div class="chat-header clearfix">
-      <img
-        src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01_green.jpg"
-        alt="avatar"
-      />
+      <%- include(views_path + 'components/user/avatar.ejs', { user: {_id: 55},
+      size: 55 }); -%>
 
       <div class="chat-about">
         <div class="chat-with">Chat with Vincent Porter</div>
@@ -107,4 +98,4 @@
 </div>
 <!-- end container -->
 
-<%- include('../partials/_layout_footer'); -%>
+<%- include(views_path + 'partials/_layout_footer.ejs'); -%>

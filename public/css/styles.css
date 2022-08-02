@@ -1,3 +1,4 @@
+@import "/static/css/normalize.css";
 @import url(https://fonts.googleapis.com/css?family=Lato:400,700);
 
 *,
@@ -11,6 +12,11 @@ body {
   font: 14px/20px "Lato", Arial, sans-serif;
   padding: 40px 0;
   color: white;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
 }
 
 ul li {
@@ -48,7 +54,7 @@ ul li {
   padding-bottom: 20px;
 }
 
-.people-list img {
+.people-list .avatar {
   float: left;
 }
 
@@ -79,7 +85,7 @@ ul li {
   border-bottom: 2px solid white;
 }
 
-.chat .chat-header img {
+.chat .chat-header .avatar {
   float: left;
 }
 
@@ -233,4 +239,9 @@ ul li {
   content: " ";
   clear: both;
   height: 0;
+}
+
+.attributions {
+  margin-top: 2rem;
+  padding: 0 2rem;
 }

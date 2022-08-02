@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const helmet = require('helmet');
 const clientErrorHandler = require('../middleware/errorHandlers/clientErrorHandler');
-const chechaCors = require('../middleware/chechaCors');
+const customHeaders = require('../middleware/customHeaders');
 
 module.exports = {
   /**
@@ -28,8 +28,8 @@ module.exports = {
     // providing a Connect/Express middleware that can be used
     // to enable CORS with various options
     app.use(cors());
-    // cors Access-Control-Allow
-    app.use(chechaCors);
+
+    app.use(customHeaders);
   },
 
   /**

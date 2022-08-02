@@ -1,26 +1,31 @@
-const TAKE_N_FIRST_FROM_STACK = 2;
-function trimError(error) {
-  const errorStackAsArray = error.stack.split('\n');
-  return errorStackAsArray
-    .splice(0, Math.min(TAKE_N_FIRST_FROM_STACK, errorStackAsArray.length))
-    .join('\n');
-}
+const path = require('path');
+const winston = require('winston');
 
-function logger(dataToLog, context = '', logLevel = 'log') {
-  const timeStr = (new Date()).toJSON();
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json(),
+  ),
+  defaultMeta: { },
+  transports: [
+    new winston.transports.File({
+      filename: path.resolve(__dirname, '../../logs/winston', 'error.log'),
+      level: 'error',
+    }),
+    new winston.transports.File({
+      filename: path.resolve(__dirname, '../../logs/winston', 'combined.log'),
+    }),
+  ],
+});
 
-  let logStr = `[${timeStr}]:`;
-
-  if (context) {
-    logStr += ` {{ ${context} }} `;
-  }
-
-  let logData = dataToLog;
-  if (dataToLog instanceof Error) {
-    logData = trimError(dataToLog);
-  }
-
-  console[logLevel](logStr, logData);
+if (process.env.NODE_ENV !== 'production') {
+  logger.add(new winston.transports.Console({
+    format: winston.format.combine(
+      winston.format.colorize(),
+      winston.format.simple(),
+    ),
+  }));
 }
 
 module.exports = logger;

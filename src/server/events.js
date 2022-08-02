@@ -1,4 +1,10 @@
+const childProcess = require('child_process');
 const logger = require('../helpers/logger');
+const pJson = require('../../package.json');
+
+const revision = childProcess
+  .execSync('git rev-parse HEAD')
+  .toString().trim();
 
 /**
  * @function
@@ -12,11 +18,11 @@ function onError(error) {
 
   switch (error.code) {
     case 'EACCES':
-      logger('Port requires elevated privileges', 'server.onError event', 'error');
+      logger.emerg('Port requires elevated privileges');
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      logger('Port is already in use', 'server.onError event', 'error');
+      logger.emerg('Port is already in use');
       process.exit(1);
       break;
     default:
@@ -30,9 +36,14 @@ function onError(error) {
  */
 function onListening() {
   const addr = this.address();
-  const bindStr = (typeof addr === 'string') ? `pipe ${addr}` : `port ${addr.port}`;
+  const bindStr = (typeof addr === 'string')
+    ? `Listening on pipe ${addr}`
+    : `Listening on http://localhost:${addr.port}`;
 
-  logger(`Listening on ${bindStr}`, 'server.onListening event', 'log');
+  logger.info(bindStr, {
+    package: { version: pJson.version },
+    git: { revision },
+  });
 }
 
 /**

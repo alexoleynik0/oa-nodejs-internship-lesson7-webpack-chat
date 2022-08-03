@@ -18,11 +18,11 @@ function onError(error) {
 
   switch (error.code) {
     case 'EACCES':
-      logger.emerg('Port requires elevated privileges');
+      logger.error('Port requires elevated privileges');
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      logger.emerg('Port is already in use');
+      logger.error('Port is already in use');
       process.exit(1);
       break;
     default:
@@ -38,7 +38,7 @@ function onListening() {
   const addr = this.address();
   const bindStr = (typeof addr === 'string')
     ? `Listening on pipe ${addr}`
-    : `Listening on http://localhost:${addr.port}`;
+    : `Listening on [http://localhost:${addr.port}/]`;
 
   logger.info(bindStr, {
     package: { version: pJson.version },

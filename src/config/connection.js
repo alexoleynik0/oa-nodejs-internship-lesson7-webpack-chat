@@ -12,14 +12,12 @@ const mongooseConnection = mongoose.createConnection(
   connectOptions,
   (error) => {
     if (error) {
-      logger.emerg(error);
+      logger.error(error);
       process.exit(1);
     }
   },
 );
 
-mongooseConnection.on('error', (error) => {
-  logger.emerg(error);
-});
+mongooseConnection.on('error', logger.error);
 
 module.exports = mongooseConnection;

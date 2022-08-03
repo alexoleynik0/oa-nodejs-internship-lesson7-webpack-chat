@@ -17,7 +17,7 @@ module.exports = (_req, res, next) => {
       + 'font-src \'self\' https: data:;'
       + 'form-action \'self\';'
       + 'frame-ancestors \'self\';'
-      + 'img-src \'self\' data:;'
+      + 'img-src * data:;'
       + 'object-src \'none\';'
       + 'script-src \'self\' cdn.jsdelivr.net;'
       + 'script-src-attr \'none\';'

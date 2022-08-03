@@ -3,6 +3,6 @@
  * Reduces having to write `try-catch` all the time.
  * {@link https://stackoverflow.com/a/49664174/11666037}.
  */
-const asyncErrorCatcher = (action) => (req, res, next) => action(req, res).catch(next);
+const asyncErrorCatcher = (action) => (req, res, next) => action(req, res, next).catch(next);
 
 module.exports = asyncErrorCatcher;

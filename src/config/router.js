@@ -3,7 +3,7 @@ const path = require('path');
 const RouteNotFoundError = require('../error/RouteNotFoundError');
 
 const prepareFrontend = (app) => {
-  // set view engine to be user
+  // set view engine and views dir
   app.set('views', path.join(__dirname, '..', 'views'));
   app.set('view engine', 'ejs');
 
@@ -27,7 +27,7 @@ module.exports = {
       throw new RouteNotFoundError();
     });
 
-    app.use('/api/v1/', router);
+    app.use('/api/v1', router);
   },
 
   frontend(app) {
@@ -48,7 +48,7 @@ module.exports = {
       res.render('errors/404.ejs');
     });
 
-    app.use(router);
+    app.use('/', router);
   },
 
   static(app) {

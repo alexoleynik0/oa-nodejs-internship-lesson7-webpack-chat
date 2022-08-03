@@ -1,6 +1,12 @@
 const { Router, static: expressStatic } = require('express');
 const path = require('path');
+const AuthRouter = require('../components/Auth/router');
 const RouteNotFoundError = require('../error/RouteNotFoundError');
+
+const prepareApi = (app) => {
+  // set trust proxy to be able to get user's IP address (for rate-limiter etc)
+  app.set('trust proxy', true);
+};
 
 const prepareFrontend = (app) => {
   // set view engine and views dir
@@ -21,7 +27,11 @@ const prepareFrontend = (app) => {
 
 module.exports = {
   api(app) {
+    prepareApi(app);
+
     const router = Router();
+
+    router.use('/auth', AuthRouter);
 
     router.use(() => {
       throw new RouteNotFoundError();

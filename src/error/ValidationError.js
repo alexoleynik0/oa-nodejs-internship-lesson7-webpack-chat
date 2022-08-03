@@ -1,5 +1,7 @@
 const ResponseError = require('./ResponseError');
 
+const DEFAULT_MESSAGE = 'Submitted form has invalid data.';
+
 /**
  * @exports
  * @extends ResponseError
@@ -9,9 +11,9 @@ class ValidationError extends ResponseError {
 
   /**
    * @constructor
-   * @param {object} message
+   * @param {any} message
    */
-  constructor(message) {
+  constructor(message = DEFAULT_MESSAGE) {
     super();
     this.message = message;
     this.name = 'E_MISSING_OR_INVALID_PARAMS';

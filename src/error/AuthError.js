@@ -1,13 +1,13 @@
 const ResponseError = require('./ResponseError');
 
-const DEFAULT_MESSAGE = 'Resource you\'re trying to reach not found.';
+const DEFAULT_MESSAGE = 'Authentication failed.';
 
 /**
  * @exports
  * @extends ResponseError
  */
-class ResourceNotFoundError extends ResponseError {
-  statusCode = 404;
+class AuthError extends ResponseError {
+  statusCode = 401;
 
   /**
    * @constructor
@@ -16,8 +16,8 @@ class ResourceNotFoundError extends ResponseError {
   constructor(message = DEFAULT_MESSAGE) {
     super();
     this.message = message;
-    this.name = 'E_RESOURCE_NOT_FOUND';
+    this.name = 'E_AUTH_ERROR';
   }
 }
 
-module.exports = ResourceNotFoundError;
+module.exports = AuthError;

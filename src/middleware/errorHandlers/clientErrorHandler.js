@@ -1,6 +1,14 @@
+const AuthError = require('../../error/AuthError');
 const ResponseError = require('../../error/ResponseError');
 
-module.exports = (error, _req, res, next) => {
+module.exports = (error, req, res, next) => {
+  if (!req.xhr && error instanceof AuthError) {
+    res.redirect('/login');
+
+    return;
+    // IDEA: process another errors for frontend (if intended)
+  }
+
   if (error instanceof ResponseError) {
     res.status(error.statusCode).json({
       message: error.name,

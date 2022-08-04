@@ -10,6 +10,8 @@ module.exports = async (req, _res, next) => {
     return next(new AuthError('You need to be logged in to use this route.'));
   }
 
+  req.authUserPayload = payload.user;
+
   Object.defineProperty(req, 'getAuthUser', {
     async get() {
       if (req.authUser !== undefined) {

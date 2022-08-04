@@ -1,8 +1,59 @@
 <%- include(views_path + 'partials/_layout_header.ejs', { title: 'Login - ' +
-appName } ); -%>
+appName, scripts: [{src: '/static/js/pages/login.js', attributes: 'defer'}] } );
+-%>
 
-<div>
-  <h1>Login</h1>
+<div class="login-page-container container clearfix">
+  <h1><%= isLoginPage ? 'Login' : 'Register new account' %></h1>
+
+  <form
+    id="form_login"
+    class="form-common"
+    action="<%= apiBaseUrl %>/auth/<%= isLoginPage ? 'login' : 'register' %>"
+    method="POST"
+  >
+    <div class="input-group">
+      <label for="form_login_nickname">Nickname</label>
+      <input
+        id="form_login_nickname"
+        type="text"
+        name="nickname"
+        placeholder="Nickname"
+        autocomplete="off"
+        minlength="4"
+        maxlength="30"
+        pattern="\w+"
+        title="Only alphanumeric characters (4-30 length)."
+        required
+      />
+    </div>
+
+    <div class="input-group">
+      <label for="form_login_password">PIN</label>
+      <input
+        id="form_login_password"
+        type="password"
+        name="password"
+        placeholder="PIN"
+        autocomplete="off"
+        minlength="4"
+        maxlength="4"
+        pattern="[0-9]*"
+        title="4 digits pin."
+        required
+        inputmode="numeric"
+      />
+    </div>
+
+    <div class="input-group">
+      <button type="submit"><%= isLoginPage ? 'Log In' : 'Register' %></button>
+    </div>
+    <div class="mt-2 text-right">
+      <% if (isLoginPage) { %> Do not have an account?
+      <a href="/register">Register one now!</a> <% } else { %> Already have an
+      account? <a href="/login">Login now!</a>
+      <% } %>
+    </div>
+  </form>
 </div>
 
 <%- include(views_path + 'partials/_layout_footer.ejs'); -%>

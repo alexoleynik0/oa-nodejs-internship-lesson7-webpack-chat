@@ -23,12 +23,72 @@ ul li {
   list-style: none;
 }
 
+input:invalid,
+input:focus-within:invalid {
+  outline: 2px solid #f44336;
+}
+
+/* ----- utils common ------- */
+
 .container {
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
   width: 750px;
-  background: #444753;
   border-radius: 5px;
 }
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mt-1 {
+  margin-top: 0.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+.float-right {
+  float: right;
+}
+
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+
+/* ----- form common ------- */
+
+.form-common {
+  padding: 2rem;
+}
+.form-common .input-group:not(:first-child) {
+  margin-top: 2rem;
+}
+.form-common .input-group > * {
+  display: block;
+}
+.form-common .input-group > *:not(:first-child) {
+  margin-top: 1rem;
+}
+.form-common input {
+  padding: 0.25rem 0.5rem;
+}
+.form-common input[type="button"],
+.form-common button {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+/* ----- chat component ------- */
 
 .people-list {
   width: 260px;
@@ -47,7 +107,7 @@ ul li {
 
 .people-list ul {
   padding: 20px;
-  height: 770px;
+  height: 750px;
 }
 
 .people-list ul li {
@@ -220,28 +280,27 @@ ul li {
   color: #94c2ed;
 }
 
-.align-left {
-  text-align: left;
-}
-
-.align-right {
-  text-align: right;
-}
-
-.float-right {
-  float: right;
-}
-
-.clearfix:after {
-  visibility: hidden;
-  display: block;
-  font-size: 0;
-  content: " ";
-  clear: both;
-  height: 0;
-}
+/* ----- footer parts ------- */
 
 .attributions {
   margin-top: 2rem;
   padding: 0 2rem;
+}
+
+/* ----- chat page ------- */
+
+.chat-page-container {
+  background: #444753;
+}
+
+/* ----- login page ------- */
+
+.login-page-container {
+  background: #94c2ed;
+}
+
+.login-page-container > h1 {
+  margin-bottom: 0;
+  padding-top: 1rem;
+  text-align: center;
 }

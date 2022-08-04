@@ -1,18 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title><%- title || appName %></title>
-    <link rel="stylesheet" href="/static/css/styles.css" />
-    <%- styles %>
-    <link rel="icon" type="image/png" href="/static/img/favicon.png" />
-    <script
-      src="https://cdn.jsdelivr.net/npm/jdenticon@3.1.1/dist/jdenticon.min.js"
-      async
-      integrity="sha384-l0/0sn63N3mskDgRYJZA6Mogihu0VY3CusdLMiwpJ9LFPklOARUcOiWEIGGmFELx"
-      crossorigin="anonymous"
-    ></script>
-    <% scripts.length && scripts.forEach((script) => { %>
-      <script src="<%= script.src %>" <%- script.attributes %>></script>
-    <% }); %>
-  </head>
-  <body>
+<%- include(views_path + 'partials/_layout_header_start.ejs'); -%>
+
+<head>
+  <title><%- title || appName %></title>
+
+  <link rel="stylesheet" href="/static/css/styles.css" />
+  <%- styles %>
+  <link rel="icon" type="image/png" href="/static/img/favicon.png" />
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/jdenticon@3.1.1/dist/jdenticon.min.js"
+    async
+    integrity="sha384-l0/0sn63N3mskDgRYJZA6Mogihu0VY3CusdLMiwpJ9LFPklOARUcOiWEIGGmFELx"
+    crossorigin="anonymous"
+  ></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" async></script>
+
+  <meta itemprop="appVariables.appName" content="<%= appName %>" />
+  <meta itemprop="appVariables.apiBaseUrl" content="<%= apiBaseUrl %>" />
+  <script src="/static/js/helpers/appVariables.js" defer></script>
+  <script src="/static/js/helpers/appLocalStorage.js" defer></script>
+  <script src="/static/js/helpers/appNotification.js" async></script>
+  <script src="/static/js/helpers/fetchApi.js" defer></script>
+  <script src="/static/js/common.js" defer></script>
+
+  <% scripts.length && scripts.forEach((script) => { %>
+  <script src="<%= script.src %>" <%- script.attributes %>
+    >
+  </script>
+  <% }); %>
+</head>
+
+<%- include(views_path + 'partials/_layout_header_end.ejs'); -%>

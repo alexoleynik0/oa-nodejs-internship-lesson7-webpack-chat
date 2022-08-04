@@ -1,4 +1,5 @@
 const { checkUserIsAuth } = require('../../helpers/http/restResponse');
+const { setAuthCookie, unsetAuthCookie } = require('./helpers/cookie');
 const AuthService = require('./service');
 
 function getRequestAdditionalData(req) {
@@ -23,6 +24,8 @@ async function getUserAccessAndRefreshTokens(user, req) {
 async function registerUsingCredentials(req, res) {
   const user = await AuthService.createUser(req.body);
 
+  setAuthCookie(res);
+
   res.status(201).json({
     userId: user.id,
     ...(await getUserAccessAndRefreshTokens(user, req)),
@@ -33,6 +36,8 @@ async function loginUsingCredentials(req, res) {
   const { nickname, password } = req.body;
   const user = await AuthService.getUserByCredentials(nickname, password);
   checkUserIsAuth(user, 'Invalid credentials pair.');
+
+  setAuthCookie(res);
 
   res.status(200).json({
     userId: user.id,
@@ -56,6 +61,8 @@ async function removeRefreshToken(req, res) {
   const user = await AuthService.getUserUsingRefreshToken(userId, oldRefreshToken);
   checkUserIsAuth(user, 'Can\'t find provided refresh token.');
 
+  unsetAuthCookie(res);
+
   res.status(204).end();
 }
 
@@ -65,6 +72,8 @@ async function removeAllRefreshTokens(req, res) {
   checkUserIsAuth(user, 'Invalid credentials pair.');
 
   await AuthService.removeAllRefreshTokensForUser(user);
+
+  unsetAuthCookie(res);
 
   res.status(204).end();
 }

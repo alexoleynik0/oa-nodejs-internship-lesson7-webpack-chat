@@ -39,7 +39,7 @@ async function getAuthRefreshJWT(user) {
 async function getPayloadFromJWT(tokenStr) {
   try {
     return jwt.verify(tokenStr, jwtSecret);
-  } catch {
+  } catch { // NOTE: we don't care about out unverified users
     return null;
   }
 }

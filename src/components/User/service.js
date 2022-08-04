@@ -2,13 +2,27 @@ const UserModel = require('./models/users');
 
 /**
  * @exports
- * @method findAll
- * @param {}
+ * @method findByQuery
+ * @param {string} query
+ * @param {number} limit
  * @summary get list of all users
  * @returns Promise<UserModel[]>
  */
-function findAll() {
-  return UserModel.find({}).exec();
+function findByQuery(query, limit) {
+  return UserModel
+    .find(
+      {
+        $or: [
+          { $text: { $search: query } },
+          { nickname: { $regex: query } },
+        ],
+      },
+      { score: { $meta: 'textScore' } },
+    )
+    .select({ _id: 1, nickname: 1 })
+    .sort({ score: { $meta: 'textScore' } })
+    .limit(limit)
+    .exec();
 }
 
 /**
@@ -69,7 +83,7 @@ function deleteById(_id) {
 }
 
 module.exports = {
-  findAll,
+  findByQuery,
   findById,
   exists,
   create,

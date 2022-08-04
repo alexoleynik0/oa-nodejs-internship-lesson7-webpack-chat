@@ -33,6 +33,11 @@ const schema = new Schema(
   },
 );
 
+schema.index(
+  { nickname: 'text', fullName: 'text' },
+  { name: 'nickname_text_fullName_text', weights: { nickname: 10, fullName: 5 } },
+);
+
 modifyMongooseSchema(schema);
 
 module.exports = mongooseConnection.model(MODEL_NAME, schema);

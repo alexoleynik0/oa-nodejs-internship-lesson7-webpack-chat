@@ -1,7 +1,10 @@
-const { Router, static: expressStatic } = require('express');
 const path = require('path');
+const { Router, static: expressStatic } = require('express');
 const AuthRouter = require('../components/Auth/router');
+const FrontendRouter = require('../components/Frontend/router');
+const isAuthUser = require('../middleware/isAuthUser');
 const RouteNotFoundError = require('../error/RouteNotFoundError');
+const UserRouter = require('../components/User/router');
 
 const prepareApi = (app) => {
   // set trust proxy to be able to get user's IP address (for rate-limiter etc)
@@ -22,6 +25,7 @@ const prepareFrontend = (app) => {
     appName: process.env.APP_NAME,
     styles: '',
     scripts: '',
+    apiBaseUrl: '/api/v1',
   };
 };
 
@@ -33,6 +37,8 @@ module.exports = {
 
     router.use('/auth', AuthRouter);
 
+    router.use('/users', isAuthUser, UserRouter);
+
     router.use(() => {
       throw new RouteNotFoundError();
     });
@@ -43,22 +49,7 @@ module.exports = {
   frontend(app) {
     prepareFrontend(app);
 
-    const router = Router();
-
-    router.get('/', (_req, res) => {
-      res.render('pages/index.ejs');
-    });
-    router.get('/login', (_req, res) => {
-      res.render('pages/login.ejs');
-    });
-
-    // route not found
-    router.use((_req, res) => {
-      res.status(404);
-      res.render('errors/404.ejs');
-    });
-
-    app.use('/', router);
+    app.use('/', FrontendRouter);
   },
 
   static(app) {

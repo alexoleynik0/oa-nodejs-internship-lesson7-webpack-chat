@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { validateBody } = require('../../middleware/validationHandler');
+const { validateBody, validateParams } = require('../../middleware/validationHandler');
 const asyncErrorCatcher = require('../../middleware/errorHandlers/asyncErrorCatcher');
 const RoomComponent = require('.');
 const RoomValidations = require('./validations');
@@ -12,7 +12,7 @@ const RoomValidations = require('./validations');
 const router = Router();
 
 /**
- * @name /v1/auth/rooms
+ * @name /v1/rooms
  */
 router.get(
   '/',
@@ -20,12 +20,21 @@ router.get(
 );
 
 /**
- * @name /v1/auth/rooms
+ * @name /v1/rooms
  */
 router.post(
   '/',
   validateBody(RoomValidations.create),
   asyncErrorCatcher(RoomComponent.create),
+);
+
+/**
+ * @name /v1/rooms/:roomId
+ */
+router.get(
+  '/:roomId',
+  validateParams(RoomValidations.findById),
+  asyncErrorCatcher(RoomComponent.findById),
 );
 
 module.exports = router;

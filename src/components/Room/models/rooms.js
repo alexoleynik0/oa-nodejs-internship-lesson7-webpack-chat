@@ -23,6 +23,18 @@ const schema = new Schema(
   },
 );
 
+schema.virtual('messages', {
+  ref: 'MessageModel',
+  localField: '_id',
+  foreignField: 'room',
+});
+schema.virtual('messagesCount', {
+  ref: 'MessageModel',
+  localField: '_id',
+  foreignField: 'room',
+  count: true, // * only get the number of docs
+});
+
 modifyMongooseSchema(schema);
 
 module.exports = mongooseConnection.model(MODEL_NAME, schema);

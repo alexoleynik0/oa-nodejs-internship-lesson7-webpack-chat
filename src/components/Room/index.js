@@ -7,7 +7,11 @@ async function create(req, res) {
   const user = await req.getAuthUser();
   const users = await UserService.findByIds([user.id, userId]);
 
-  const room = await RoomService.create(user, users);
+  let room = await RoomService.findByUsers(users); // NOTE: check if it exists
+
+  if (room === null) { // NOTE: if it's realy new Room - create
+    room = await RoomService.create(user, users);
+  }
 
   res.status(201).json({
     data: room.id,
@@ -16,21 +20,23 @@ async function create(req, res) {
 
 async function findAll(req, res) {
   const user = await req.getAuthUser();
-  await RoomService.findAllForUser(user);
+
+  const rooms = await RoomService.findAllForUser(user);
 
   res.status(200).json({
-    data: user.rooms,
+    data: rooms,
   });
 }
 
 async function findById(req, res) {
   const { roomId } = req.params;
   const user = await req.getAuthUser();
-  await RoomService.findByIdForUser(user, roomId);
-  checkResourceIsFound(user.rooms[0]);
+
+  const room = await RoomService.findByIdForUser(user, roomId);
+  checkResourceIsFound(room);
 
   res.status(200).json({
-    data: user.rooms[0],
+    data: room,
   });
 }
 

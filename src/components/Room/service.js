@@ -18,40 +18,48 @@ async function create(creator, users) {
 }
 
 function findAllForUser(user) {
-  return user
-    .populate({
-      path: 'rooms',
-      select: 'creator lastMessageAt',
-      sort: '-lastMessageAt -updatedAt',
-      populate: [{
-        path: 'users',
-        match: { _id: { $ne: user.id } },
-        select: 'nickname photoUrl',
-      }, {
-        path: 'lastMessage',
-        select: 'text',
-      }],
-    });
+  return RoomModel
+    .find({
+      _id: { $in: user.rooms },
+    })
+    .select('creator updatedAt')
+    .sort('-updatedAt')
+    .populate([{
+      path: 'users',
+      match: { _id: { $ne: user.id } },
+      select: 'nickname photoUrl',
+    }, {
+      path: 'lastMessage',
+      select: 'text',
+    }])
+    .exec();
+}
+
+function findByUsers(users) {
+  return RoomModel
+    .findOne({ users })
+    .select('_id')
+    .exec();
 }
 
 function findByIdForUser(user, roomId) {
-  return user
-    .populate({
-      path: 'rooms',
-      match: { _id: roomId },
-      select: 'creator lastMessage',
-      populate: [{
-        path: 'users',
-        match: { _id: { $ne: user.id } },
-        select: 'nickname photoUrl',
-      }, {
-        path: 'messagesCount',
-      }],
-    });
+  return RoomModel
+    .findOne({ _id: roomId, users: user })
+    .select('creator updatedAt')
+    .sort('-updatedAt')
+    .populate([{
+      path: 'users',
+      match: { _id: { $ne: user.id } },
+      select: 'nickname photoUrl',
+    }, {
+      path: 'messagesCount',
+    }])
+    .exec();
 }
 
 module.exports = {
   create,
   findAllForUser,
+  findByUsers,
   findByIdForUser,
 };

@@ -15,6 +15,6 @@
       .catch(console.error);
   };
 
-  const formLogout = document.getElementById('form_logout');
+  const formLogout = document.getElementById('form-logout');
   formLogout?.addEventListener('submit', formLogoutOnSubmit);
 }

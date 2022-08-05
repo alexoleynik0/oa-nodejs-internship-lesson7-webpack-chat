@@ -23,6 +23,13 @@ ul li {
   list-style: none;
 }
 
+input {
+  border-radius: 3px;
+  border: none;
+  padding: 14px;
+  font-size: 14px;
+}
+
 input:invalid,
 input:focus-within:invalid {
   outline: 2px solid #f44336;
@@ -40,9 +47,11 @@ input:focus-within:invalid {
 .text-left {
   text-align: left;
 }
-
 .text-right {
   text-align: right;
+}
+.text-center {
+  text-align: center;
 }
 
 .mt-1 {
@@ -50,6 +59,48 @@ input:focus-within:invalid {
 }
 .mt-2 {
   margin-top: 0.5rem;
+}
+.mt-3 {
+  margin-top: 0.75rem;
+}
+.mt-4 {
+  margin-top: 1rem;
+}
+.mr-1 {
+  margin-right: 0.25rem;
+}
+.mr-2 {
+  margin-right: 0.5rem;
+}
+.mr-3 {
+  margin-right: 0.75rem;
+}
+.mr-4 {
+  margin-right: 1rem;
+}
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+.mb-3 {
+  margin-bottom: 0.75rem;
+}
+.mb-4 {
+  margin-bottom: 1rem;
+}
+.ml-1 {
+  margin-left: 0.25rem;
+}
+.ml-2 {
+  margin-left: 0.5rem;
+}
+.ml-3 {
+  margin-left: 0.75rem;
+}
+.ml-4 {
+  margin-left: 1rem;
 }
 
 .float-right {
@@ -68,7 +119,7 @@ input:focus-within:invalid {
 /* ----- form common ------- */
 
 .form-common {
-  padding: 2rem;
+  padding: 1.5rem;
 }
 .form-common .input-group:not(:first-child) {
   margin-top: 2rem;
@@ -79,9 +130,6 @@ input:focus-within:invalid {
 .form-common .input-group > *:not(:first-child) {
   margin-top: 1rem;
 }
-.form-common input {
-  padding: 0.25rem 0.5rem;
-}
 .form-common input[type="button"],
 .form-common button {
   padding: 0.5rem 1rem;
@@ -90,45 +138,79 @@ input:focus-within:invalid {
 
 /* ----- chat component ------- */
 
-.people-list {
+.chat-side-nav {
+  display: flex;
+  flex-direction: column;
   width: 260px;
-  float: left;
 }
 
-.people-list input {
-  border-radius: 3px;
-  border: none;
-  padding: 14px;
-  color: white;
-  background: #6a6c75;
-  width: 90%;
-  font-size: 14px;
-}
-
-.people-list ul {
+.chat-side-nav .chat-rooms-list {
   padding: 20px;
-  height: 750px;
+  padding-bottom: 80px;
 }
 
-.people-list ul li {
-  padding-bottom: 20px;
+.chat-rooms-list .chat-rooms-list-item {
+  margin-bottom: 20px;
 }
 
-.people-list .avatar {
+.chat-rooms-list-item {
+  cursor: pointer;
+}
+
+.chat-rooms-list-item:hover {
+  transform: translate(2px, -2px);
+}
+
+.chat-rooms-list-item > * {
+  -webkit-touch-callout: none;
+  pointer-events: none;
+  touch-action: none;
+  user-select: none;
+}
+
+.chat-rooms-list .avatar {
   float: left;
 }
 
-.people-list .about {
+.chat-rooms-list .about {
   float: left;
   margin-top: 8px;
-}
-
-.people-list .about {
   padding-left: 8px;
+  max-width: 70%;
 }
 
-.people-list .status {
+.chat-rooms-list .status {
   color: #92959e;
+}
+
+.chat-rooms-list .last-message {
+  color: #bdbdbd;
+  font-size: 0.85em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chat-side-nav .header {
+  padding: 20px;
+}
+.chat-side-nav .header h2 {
+  margin: 0;
+}
+
+.chat-side-nav .footer {
+  margin-top: auto;
+  padding: 20px;
+}
+.chat-side-nav .footer .form-common {
+  padding: 0;
+}
+
+.chat-search-form {
+}
+
+.chat-search-form input {
+  width: 100%;
 }
 
 .chat {
@@ -185,6 +267,7 @@ input:focus-within:invalid {
 .chat .chat-history .message-data-time {
   color: #a8aab1;
   padding-left: 6px;
+  padding-right: 6px;
 }
 
 .chat .chat-history .message {
@@ -196,6 +279,7 @@ input:focus-within:invalid {
   margin-bottom: 30px;
   width: 90%;
   position: relative;
+  white-space: pre-wrap;
 }
 
 .chat .chat-history .message:after {
@@ -290,6 +374,7 @@ input:focus-within:invalid {
 /* ----- chat page ------- */
 
 .chat-page-container {
+  display: flex;
   background: #444753;
 }
 

@@ -8,7 +8,7 @@
       .replace(/(\..*?)\..*/g, '$1');
   };
 
-  const formLoginPasswordInput = document.getElementById('form_login_password');
+  const formLoginPasswordInput = document.getElementById('form-login-password');
   formLoginPasswordInput?.addEventListener('input', formLoginPasswordOnInput);
 }
 {
@@ -22,6 +22,6 @@
       .catch(console.error);
   };
 
-  const formLogin = document.getElementById('form_login');
+  const formLogin = document.getElementById('form-login');
   formLogin?.addEventListener('submit', formLoginOnSubmit);
 }

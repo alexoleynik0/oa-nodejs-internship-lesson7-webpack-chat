@@ -6,15 +6,15 @@
   <h1><%= isLoginPage ? 'Login' : 'Register new account' %></h1>
 
   <form
-    id="form_login"
+    id="form-login"
     class="form-common"
     action="<%= apiBaseUrl %>/auth/<%= isLoginPage ? 'login' : 'register' %>"
     method="POST"
   >
     <div class="input-group">
-      <label for="form_login_nickname">Nickname</label>
+      <label for="form-login-nickname">Nickname</label>
       <input
-        id="form_login_nickname"
+        id="form-login-nickname"
         type="text"
         name="nickname"
         placeholder="Nickname"
@@ -28,9 +28,9 @@
     </div>
 
     <div class="input-group">
-      <label for="form_login_password">PIN</label>
+      <label for="form-login-password">PIN</label>
       <input
-        id="form_login_password"
+        id="form-login-password"
         type="password"
         name="password"
         placeholder="PIN"
@@ -48,9 +48,12 @@
       <button type="submit"><%= isLoginPage ? 'Log In' : 'Register' %></button>
     </div>
     <div class="mt-2 text-right">
-      <% if (isLoginPage) { %> Do not have an account?
-      <a href="/register">Register one now!</a> <% } else { %> Already have an
-      account? <a href="/login">Login now!</a>
+      <% if (isLoginPage) { %>
+      <span>Do not have an account?</span>
+      <a href="/register" class="ml-4">Register one now!</a>
+      <% } else { %>
+      <span>Already have an account?</span>
+      <a href="/login" class="ml-4">Login now!</a>
       <% } %>
     </div>
   </form>

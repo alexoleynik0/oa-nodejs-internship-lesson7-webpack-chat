@@ -1,100 +1,38 @@
 <%- include(views_path + 'partials/layout/_header.ejs', { title: 'Dialogs - ' +
-appName, scripts: [{src: '/static/js/pages/chat.js', attributes: 'defer'}] }); -%>
+appName, scripts: [{src: '/static/js/components/chat/chat.js', attributes:
+'defer'}, {src: '/static/js/pages/chat.js', attributes: 'defer'}] }); -%>
 
 <div class="chat-page-container container clearfix">
-  <div class="people-list" id="people-list">
-    <ul class="list">
-      <li class="clearfix">
-        <%- include(views_path + 'components/user/avatar.ejs', { user: {id:
-        123}, size: 55 }); -%>
-        <div class="about">
-          <div class="name">Vincent Porter</div>
-        </div>
-      </li>
-
-      <li class="clearfix">
-        <%- include(views_path + 'components/user/avatar.ejs', { user: {id:
-        23}, size: 55 }); -%>
-        <div class="about">
-          <div class="name">Aiden Chavez</div>
-        </div>
-      </li>
+  <div class="chat-side-nav">
+    <div class="header">
+      <h2>Rooms</h2>
+      <form id="chat-search-form" class="chat-search-form mt-4">
+        <input type="text" name="query" placeholder="Type Nickname to search" />
+      </form>
+    </div>
+    <ul class="chat-rooms-list" id="chat-rooms-list">
+      <li class="clearfix">Loading...</li>
     </ul>
-    <div class="mt-3">
+    <div class="footer">
       <%- include(views_path + 'partials/_logout_form.ejs'); -%>
     </div>
   </div>
 
   <div class="chat">
-    <div class="chat-header clearfix">
-      <%- include(views_path + 'components/user/avatar.ejs', { user: {id: 55},
-      size: 55 }); -%>
-
-      <div class="chat-about">
-        <div class="chat-with">Chat with Vincent Porter</div>
-        <div class="chat-num-messages">already 1 902 messages</div>
-      </div>
+    <div class="chat-header clearfix" id="chat-room-header">
+      <h2 class="text-center">Select or Create a Room to start.</h2>
     </div>
     <!-- end chat-header -->
 
     <div class="chat-history">
-      <ul>
-        <li class="clearfix">
-          <div class="message-data text-right">
-            <span class="message-data-time">10:10 AM, Today</span> &nbsp; &nbsp;
-            <span class="message-data-name">Olia</span>
-          </div>
-          <div class="message other-message float-right">
-            Hi Vincent, how are you? How is the project coming along?
-          </div>
-        </li>
-
-        <li>
-          <div class="message-data">
-            <span class="message-data-name">Vincent</span>
-            <span class="message-data-time">10:12 AM, Today</span>
-          </div>
-          <div class="message my-message">
-            Are we meeting today? Project has been already finished and I have
-            results to show you.
-          </div>
-        </li>
-
-        <li class="clearfix">
-          <div class="message-data text-right">
-            <span class="message-data-time">10:14 AM, Today</span> &nbsp; &nbsp;
-            <span class="message-data-name">Olia</span>
-          </div>
-          <div class="message other-message float-right">
-            Well I am not sure. The rest of the team is not here yet. Maybe in
-            an hour or so? Have you faced any problems at the last phase of the
-            project?
-          </div>
-        </li>
-
-        <li>
-          <div class="message-data">
-            <span class="message-data-name"> Vincent</span>
-            <span class="message-data-time">10:20 AM, Today</span>
-          </div>
-          <div class="message my-message">
-            Actually everything was fine. I'm very excited to show this to our
-            team.
-          </div>
-        </li>
-      </ul>
+      <ul id="chat-room-messages-list"></ul>
     </div>
     <!-- end chat-history -->
 
-    <div class="chat-message clearfix">
-      <textarea
-        name="message-to-send"
-        id="message-to-send"
-        placeholder="Type your message"
-        rows="3"
-      ></textarea>
-      <button>Send</button>
-    </div>
+    <form id="chat-room-send-form" class="chat-message clearfix">
+      <textarea name="text" placeholder="Type your message" rows="3"></textarea>
+      <button type="submit">Send</button>
+    </form>
     <!-- end chat-message -->
   </div>
   <!-- end chat -->

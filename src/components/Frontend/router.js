@@ -38,7 +38,7 @@ router.get(
 // route not found
 router.use((_req, res) => {
   res.status(404);
-  res.render('errors/404.ejs');
+  res.render('pages/errors/404.ejs');
 });
 
 module.exports = router;

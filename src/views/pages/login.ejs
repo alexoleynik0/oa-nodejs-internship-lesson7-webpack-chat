@@ -1,6 +1,6 @@
-<%- include(views_path + 'partials/_layout_header.ejs', { title: 'Login - ' +
-appName, scripts: [{src: '/static/js/pages/login.js', attributes: 'defer'}] } );
--%>
+<%- include(views_path + 'partials/layout/_header.ejs', { title: (isLoginPage ?
+'Login' : 'Register') + ' - ' + appName, scripts: [{src:
+'/static/js/pages/login.js', attributes: 'defer'}] } ); -%>
 
 <div class="login-page-container container clearfix">
   <h1><%= isLoginPage ? 'Login' : 'Register new account' %></h1>
@@ -56,4 +56,4 @@ appName, scripts: [{src: '/static/js/pages/login.js', attributes: 'defer'}] } );
   </form>
 </div>
 
-<%- include(views_path + 'partials/_layout_footer.ejs'); -%>
+<%- include(views_path + 'partials/layout/_footer.ejs'); -%>

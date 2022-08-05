@@ -2,7 +2,7 @@ const AuthError = require('../../error/AuthError');
 const ResourceNotFoundError = require('../../error/ResourceNotFoundError');
 
 function checkResourceIsFound(resource, errorMessage) {
-  if (resource === null) {
+  if (resource === null || resource === undefined) {
     throw new ResourceNotFoundError(errorMessage);
   }
 }

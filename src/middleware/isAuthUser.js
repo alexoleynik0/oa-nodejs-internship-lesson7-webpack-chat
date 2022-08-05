@@ -1,6 +1,6 @@
-const jwtFacade = require('../components/Auth/helpers/jwt.facade');
-const AuthService = require('../components/Auth/service');
 const AuthError = require('../error/AuthError');
+const jwtFacade = require('../components/Auth/helpers/jwt.facade');
+const UserService = require('../components/User/service');
 
 module.exports = async (req, _res, next) => {
   const accessToken = req.headers.authorization?.replace('Bearer ', '');
@@ -11,15 +11,12 @@ module.exports = async (req, _res, next) => {
   }
 
   req.authUserPayload = payload.user;
-
-  Object.defineProperty(req, 'getAuthUser', {
-    async get() {
-      if (req.authUser !== undefined) {
-        req.authUser = await AuthService.getAuthUserById(payload.authUserId);
-      }
-      return Promise.resolve(req.authUser);
-    },
-  });
+  req.getAuthUser = async () => {
+    if (req.authUser === undefined) {
+      req.authUser = await UserService.findById(req.authUserPayload.id);
+    }
+    return Promise.resolve(req.authUser);
+  };
 
   return next();
 };

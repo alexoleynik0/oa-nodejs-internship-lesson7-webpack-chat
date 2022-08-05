@@ -25,6 +25,9 @@ const schema = new Schema(
       required: true,
       select: false,
     },
+
+    // relations
+    rooms: [{ type: Schema.Types.ObjectId, ref: 'RoomModel' }],
   },
   {
     collection: COLLECTION_NAME,

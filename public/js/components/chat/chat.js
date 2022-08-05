@@ -1,69 +1,6 @@
-/* global debounce appVariables fetchApi jdenticon */
+/* global debounce appVariables fetchApi ChatHtmlGenerators updateAvatars */
 
 {
-  const timestampToHuman = (timestamp) => (new Date(timestamp)).toLocaleString();
-
-  const generateUserAvatarHTML = (user, size) => (`
-    <svg
-      class="avatar"
-      data-jdenticon-value="${user.id || user}"
-      width="${size}"
-      height="${size}"
-    >
-      <image
-        xlink:href="/static/img/favicon.png"
-        src="/static/img/favicon.png"
-        alt="avatar"
-        width="${size}"
-        height="${size}"
-      />
-    </svg>
-  `);
-
-  const generateRoomListItemHTML = (room) => (`
-    <li class="clearfix chat-rooms-list-item" data-room-id="${room.id}">
-      ${generateUserAvatarHTML(room.users[0] || room.creator, 55)}
-      <div class="about">
-        <div class="name">${room.users[0]?.nickname || 'My notes'}</div>
-        <div class="status"></div>
-        <div class="last-message">${room.lastMessage !== undefined ? room.lastMessage.text : ''}</div>
-      </div>
-    </li>
-  `);
-
-  const generateSearchResultListItemHTML = (user) => (`
-    <li class="clearfix chat-rooms-list-item" data-user-id="${user.id}">
-      ${generateUserAvatarHTML(user, 55)}
-      <div class="about">
-        <div class="name">${user.nickname}</div>
-        <div class="status"></div>
-        <div class="last-message">[click to create a Room]</div>
-      </div>
-    </li>
-  `);
-
-  const generateRoomHeaderHTML = (room) => (`
-    ${generateUserAvatarHTML(room.users[0] || room.creator, 55)}
-    <div class="chat-about">
-      <div class="chat-with">${room.users[0] !== undefined ? `Room with ${room.users[0].nickname}` : 'My notes'}</div>
-      <div class="chat-num-messages">already ${(room.messagesCount || 0).toLocaleString(undefined)} messages</div>
-    </div>
-  `);
-
-  const generateMessageListItemHTML = (message, user, isMeCreator) => (`
-    <li class="clearfix chat-room-messages-list-item" data-message-id="${message.id}">
-      <div class="message-data ${isMeCreator ? 'text-right' : ''}">
-        <span class="message-data-time">${timestampToHuman(message.createdAt)}</span> &nbsp; &nbsp;
-        <span class="message-data-name">${user.nickname}</span>
-      </div>
-      <div class="message ${isMeCreator ? 'other-message float-right' : 'my-message'}">${message.text}</div>
-    </li>
-  `);
-
-  const updateAvatars = () => {
-    jdenticon();
-  };
-
   class ChatComponent {
     me = null;
 
@@ -288,7 +225,7 @@
       let html = '';
 
       if (this.rooms.length > 0) {
-        html = this.rooms.map(generateRoomListItemHTML).join('');
+        html = this.rooms.map(ChatHtmlGenerators.roomListItemHTML).join('');
       } else {
         html = '<li>Your rooms list is empty.<br />Search for a friend and create one!</li>';
       }
@@ -306,7 +243,7 @@
       let html = '';
 
       if (this.searchResults.length > 0) {
-        html = this.searchResults.map(generateSearchResultListItemHTML).join('');
+        html = this.searchResults.map(ChatHtmlGenerators.searchResultListItemHTML).join('');
       } else {
         html = '<li>No results for your input..</li>';
       }
@@ -328,7 +265,7 @@
     }
 
     renderActiveRoomHeader() {
-      this.domElements.roomHeader.innerHTML = generateRoomHeaderHTML(this.activeRoom);
+      this.domElements.roomHeader.innerHTML = ChatHtmlGenerators.roomHeaderHTML(this.activeRoom);
       updateAvatars();
     }
 
@@ -342,7 +279,7 @@
           .map((message) => {
             const user = this.getUserOfMessage(message);
             const isMeCreator = user.id === this.me.id;
-            return generateMessageListItemHTML(message, user, isMeCreator);
+            return ChatHtmlGenerators.messageListItemHTML(message, user, isMeCreator);
           })
           .join('');
       } else {

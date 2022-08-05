@@ -1,5 +1,7 @@
-<%- include(views_path + 'partials/layout/_header.ejs', { title: 'Dialogs - ' +
-appName, scripts: [{src: '/static/js/components/chat/chat.js', attributes:
+<%- include(views_path + 'partials/layout/_header.ejs', { title: 'Rooms - ' +
+appName, scripts: [{src: '/static/js/helpers/avatars.js', attributes:
+'defer'}, {src: '/static/js/components/chat/chatHtmlGenerators.js', attributes:
+'defer'}, {src: '/static/js/components/chat/chat.js', attributes:
 'defer'}, {src: '/static/js/pages/chat.js', attributes: 'defer'}] }); -%>
 
 <div class="chat-page-container container clearfix">

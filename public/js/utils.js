@@ -20,4 +20,7 @@ function debounce(func, wait, immediate) {
   };
 }
 
+const timestampToHuman = (timestamp) => (new Date(timestamp)).toLocaleString();
+
 window.debounce = debounce;
+window.timestampToHuman = timestampToHuman;

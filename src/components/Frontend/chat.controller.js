@@ -1,5 +1,5 @@
 function dialogsPage(_req, res) {
-  res.render('pages/index.ejs');
+  res.render('pages/chat.ejs');
 }
 
 module.exports = {

@@ -1,4 +1,4 @@
-/* global appLocalStorage fetchApi */
+/* global appLocalStorage fetchApi io */
 
 {
   const formLogoutOnSubmit = (e) => {
@@ -17,4 +17,10 @@
 
   const formLogout = document.getElementById('form-logout');
   formLogout?.addEventListener('submit', formLogoutOnSubmit);
+}
+
+{
+  const socket = io();
+
+  window.socket = socket;
 }

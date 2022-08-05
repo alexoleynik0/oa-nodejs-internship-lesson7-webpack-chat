@@ -381,11 +381,21 @@ input:focus-within:invalid {
 /* ----- login page ------- */
 
 .login-page-container {
+  width: 340px;
   background: #94c2ed;
 }
 
 .login-page-container > h1 {
   margin-bottom: 0;
-  padding-top: 1rem;
+  padding-top: 2rem;
   text-align: center;
+}
+
+.login-page-container .form-common input {
+  width: 100%;
+}
+
+.login-page-container .form-common button {
+  margin: 0 auto;
+  width: 120px;
 }

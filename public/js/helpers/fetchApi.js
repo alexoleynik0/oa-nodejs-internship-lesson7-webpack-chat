@@ -66,12 +66,19 @@
       redirect: 'follow', // manual, *follow, error
       referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
       // body data type must match "Content-Type" header
-      body: dataToSend !== null ? JSON.stringify(dataToSend) : undefined,
+      body: method !== 'GET' && dataToSend !== null ? JSON.stringify(dataToSend) : undefined,
     };
 
-    const response = await fetch(url, options);
+    // query params to url
+    let urlToSend = url;
+    if (method === 'GET' && dataToSend !== null) {
+      urlToSend += `?${(new URLSearchParams(dataToSend)).toString()}`;
+    }
 
-    const resContentLength = response.headers.get('Content-Length') || 0;
+    const response = await fetch(urlToSend, options);
+
+    const resContentLength = parseInt(response.headers.get('Content-Length'), 10)
+      || (response.status === 204 ? 0 : 1);
 
     // parses JSON response into native JavaScript objects
     const resJSON = resContentLength > 0 ? await response.json() : {};

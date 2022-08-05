@@ -22,23 +22,17 @@ const rules = {
   refreshToken: validator.string(),
 };
 
-const create = validator.object().keys({
-  nickname: rules.nickname.required(),
-  password: rules.password.required(),
-});
-
-const createAsync = validator.object().keys({
-  nickname: rules.nicknameUnique.required(),
-  password: commonRules.optional,
-});
-
-const refreshToken = validator.object().keys({
-  userId: commonRules.id.required(),
-  oldRefreshToken: rules.refreshToken.required(),
-});
-
 module.exports = {
-  create,
-  createAsync,
-  refreshToken,
+  create: validator.object().keys({
+    nickname: rules.nickname.required(),
+    password: rules.password.required(),
+  }),
+  createAsync: validator.object().keys({
+    nickname: rules.nicknameUnique.required(),
+    password: commonRules.optional,
+  }),
+  refreshToken: validator.object().keys({
+    userId: commonRules.id.required(),
+    oldRefreshToken: rules.refreshToken.required(),
+  }),
 };

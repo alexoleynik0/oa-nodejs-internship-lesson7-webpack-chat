@@ -1,6 +1,8 @@
 const { Router } = require('express');
+const { validateQuery } = require('../../middleware/validationHandler');
 const asyncErrorCatcher = require('../../middleware/errorHandlers/asyncErrorCatcher');
 const UserComponent = require('.');
+const UserValidations = require('./validations');
 
 /**
  * Express router to mount user related functions on.
@@ -32,7 +34,7 @@ router.get(
  */
 router.get(
   '/',
-  // TODO: add query validation
+  validateQuery(UserValidations.findAll),
   asyncErrorCatcher(UserComponent.findAll),
 );
 

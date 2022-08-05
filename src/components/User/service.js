@@ -38,6 +38,17 @@ function findById(id) {
 
 /**
  * @exports
+ * @method findByIds
+ * @param {array} ids
+ * @summary get user array
+ * @returns {Promise<UserModel[]>}
+ */
+function findByIds(ids) {
+  return UserModel.find({ _id: { $in: ids } }).exec();
+}
+
+/**
+ * @exports
  * @method exists
  * @param {object} filter
  * @summary boolean for provided filter
@@ -85,6 +96,7 @@ function deleteById(_id) {
 module.exports = {
   findByQuery,
   findById,
+  findByIds,
   exists,
   create,
   updateById,

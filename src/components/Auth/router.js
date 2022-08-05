@@ -2,7 +2,7 @@ const { Router } = require('express');
 const { validateBody } = require('../../middleware/validationHandler');
 const asyncErrorCatcher = require('../../middleware/errorHandlers/asyncErrorCatcher');
 const AuthComponent = require('.');
-const AuthSchemas = require('./schemas');
+const AuthValidations = require('./validations');
 
 /**
  * Express router to mount auth related functions on.
@@ -17,8 +17,8 @@ const router = Router();
 router.post(
   // TODO: add throttling / limit
   '/register',
-  validateBody(AuthSchemas.create),
-  validateBody(AuthSchemas.createAsync),
+  validateBody(AuthValidations.create),
+  validateBody(AuthValidations.createAsync),
   asyncErrorCatcher(AuthComponent.registerUsingCredentials),
 );
 
@@ -28,7 +28,7 @@ router.post(
 router.post(
   // TODO: add throttling
   '/login',
-  validateBody(AuthSchemas.create),
+  validateBody(AuthValidations.create),
   asyncErrorCatcher(AuthComponent.loginUsingCredentials),
 );
 
@@ -37,7 +37,7 @@ router.post(
  */
 router.post(
   '/token',
-  validateBody(AuthSchemas.refreshToken),
+  validateBody(AuthValidations.refreshToken),
   asyncErrorCatcher(AuthComponent.getNewAccessAndRefreshToken),
 );
 
@@ -46,7 +46,7 @@ router.post(
  */
 router.post(
   '/logout',
-  validateBody(AuthSchemas.refreshToken),
+  validateBody(AuthValidations.refreshToken),
   asyncErrorCatcher(AuthComponent.removeRefreshToken),
 );
 
@@ -55,7 +55,7 @@ router.post(
  */
 router.post(
   '/logout-everywhere',
-  validateBody(AuthSchemas.create),
+  validateBody(AuthValidations.create),
   asyncErrorCatcher(AuthComponent.removeAllRefreshTokens),
 );
 

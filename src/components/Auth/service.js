@@ -3,10 +3,6 @@ const UserModel = require('../User/models/users');
 const RefreshTokenModel = require('./models/refresh_tokens');
 const { getPasswordHash, isPasswordCorrect } = require('./helpers/password');
 
-async function getUserById(userId) {
-  return UserModel.findById(userId).exec();
-}
-
 async function createUser(data) {
   const passwordHash = await getPasswordHash(data.password);
   return UserModel.create({
@@ -70,7 +66,6 @@ async function removeAllRefreshTokensForUser(user) {
 }
 
 module.exports = {
-  getUserById,
   createUser,
   getUserByCredentials,
   createAccessTokenForUser,

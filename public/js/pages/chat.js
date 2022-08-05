@@ -1,10 +1,11 @@
+/* global appVariables fetchApi */
+
 {
-  const documentOnLoad = () => {
+  const windowOnLoad = () => {
     fetchApi(`${appVariables.apiBaseUrl}/users/me`)
       .then(console.log)
       .catch(console.error);
   };
 
-  const peopleList = document.getElementById('people-list');
-  document.addEventListener('DOMContentLoaded', documentOnLoad);
+  window.addEventListener('load', windowOnLoad);
 }

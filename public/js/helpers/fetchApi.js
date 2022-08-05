@@ -1,3 +1,5 @@
+/* global appLocalStorage appNotification appVariables */
+
 {
   const errorCodeToTitle = (errorCode) => (({
     E_MISSING_OR_INVALID_PARAMS: 'Validation Error',
@@ -26,10 +28,12 @@
       oldRefreshToken: appLocalStorage.getItem('refreshToken'),
     };
     try {
+      // eslint-disable-next-line no-use-before-define
       await fetchApi(`${appVariables.apiBaseUrl}/auth/token`, 'POST', refreshData);
+      // eslint-disable-next-line no-use-before-define
       return fetchApi(url, method, data, retryLimit);
     } catch {
-      location = '/login';
+      window.location = '/login';
       return Promise.reject(new Error('Token refresh failed.'));
     }
   };

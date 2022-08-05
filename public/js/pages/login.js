@@ -1,3 +1,5 @@
+/* global fetchApi */
+
 {
   const formLoginPasswordOnInput = (e) => {
     const input = e.target;
@@ -15,7 +17,7 @@
     const form = e.target;
     fetchApi(form.action, form.getAttribute('method'), new FormData(form))
       .then(() => {
-        location = '/';
+        window.location = '/';
       })
       .catch(console.error);
   };

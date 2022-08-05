@@ -1,3 +1,5 @@
+/* global appLocalStorage fetchApi */
+
 {
   const formLogoutOnSubmit = (e) => {
     e.preventDefault();
@@ -8,7 +10,7 @@
     const form = e.target;
     fetchApi(form.action, form.getAttribute('method'), data)
       .then(() => {
-        location = '/login';
+        window.location = '/login';
       })
       .catch(console.error);
   };

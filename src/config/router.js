@@ -4,6 +4,7 @@ const AuthRouter = require('../components/Auth/router');
 const FrontendRouter = require('../components/Frontend/router');
 const isAuthUser = require('../middleware/isAuthUser');
 const RouteNotFoundError = require('../error/RouteNotFoundError');
+const MessageRouter = require('../components/Message/router');
 const RoomRouter = require('../components/Room/router');
 const UserRouter = require('../components/User/router');
 
@@ -41,6 +42,8 @@ module.exports = {
     router.use('/users', isAuthUser, UserRouter);
 
     router.use('/rooms', isAuthUser, RoomRouter);
+
+    router.use('/messages', isAuthUser, MessageRouter);
 
     router.use(() => {
       throw new RouteNotFoundError();

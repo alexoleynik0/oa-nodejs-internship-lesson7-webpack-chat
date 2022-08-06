@@ -3,6 +3,7 @@ const { validateBody } = require('../../middleware/validationHandler');
 const asyncErrorCatcher = require('../../middleware/errorHandlers/asyncErrorCatcher');
 const AuthComponent = require('.');
 const AuthValidations = require('./validations');
+const rateLimiterMiddleware = require('../../middleware/rateLimiterMiddleware');
 
 /**
  * Express router to mount auth related functions on.
@@ -15,8 +16,8 @@ const router = Router();
  * @name /v1/auth/register
  */
 router.post(
-  // TODO: add throttling / limit
   '/register',
+  rateLimiterMiddleware('auth/register', { points: 1, duration: 2 }), // allow 1 request per 2 seconds
   validateBody(AuthValidations.create),
   validateBody(AuthValidations.createAsync),
   asyncErrorCatcher(AuthComponent.registerUsingCredentials),
@@ -26,8 +27,8 @@ router.post(
  * @name /v1/auth/login
  */
 router.post(
-  // TODO: add throttling
   '/login',
+  rateLimiterMiddleware('auth/login', { points: 1, duration: 2 }), // allow 1 request per 2 seconds
   validateBody(AuthValidations.create),
   asyncErrorCatcher(AuthComponent.loginUsingCredentials),
 );

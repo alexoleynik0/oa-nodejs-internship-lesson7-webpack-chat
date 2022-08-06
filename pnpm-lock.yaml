@@ -18,7 +18,8 @@ specifiers:
   migrate-mongo: 9.0.0
   mongoose: 6.0.14
   normalize.css: 8.0.1
-  socket.io: ^4.5.1
+  rate-limiter-flexible: ^2.3.8
+  socket.io: 4.5.1
   winston: 3.8.1
 
 dependencies:
@@ -35,6 +36,7 @@ dependencies:
   jsonwebtoken: 8.5.1
   mongoose: 6.0.14
   normalize.css: 8.0.1
+  rate-limiter-flexible: 2.3.8
   socket.io: 4.5.1
   winston: 3.8.1
 
@@ -1946,6 +1948,10 @@ packages:
   /range-parser/1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
+    dev: false
+
+  /rate-limiter-flexible/2.3.8:
+    resolution: {integrity: sha512-ENCiteaxQKSFhTPxNq3Trb2dtyVoO2/PyewCicUoRi/ewmNyPdW6nowSYGUZhSE0r7udmf6FaU+tOUIOmVUKGg==}
     dev: false
 
   /raw-body/2.4.0:

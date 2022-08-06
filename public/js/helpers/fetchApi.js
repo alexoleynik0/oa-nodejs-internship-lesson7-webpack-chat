@@ -6,6 +6,7 @@
     E_AUTH_ERROR: 'Authentication Error',
     E_RESOURCE_NOT_FOUND: 'Not Found',
     E_ROUTE_NOT_FOUND: 'Not Found',
+    E_TOO_MANY_REQUESTS: 'Too Many Requests',
   })[errorCode] || errorCode);
 
   const processSimpleError = (resJSON) => {

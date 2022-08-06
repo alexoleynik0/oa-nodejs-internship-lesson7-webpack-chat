@@ -19,8 +19,12 @@
   formLogout?.addEventListener('submit', formLogoutOnSubmit);
 }
 
-{
-  const socket = io();
+if (appLocalStorage.getItem('userId')) {
+  const socket = io({
+    query: {
+      roomName: appLocalStorage.getItem('userId'),
+    },
+  });
 
   window.socket = socket;
 }

@@ -1,4 +1,4 @@
-/* global debounce appVariables fetchApi ChatHtmlGenerators updateAvatars */
+/* global debounce appVariables fetchApi ChatHtmlGenerators updateAvatars socket */
 
 {
   class ChatComponent {
@@ -41,6 +41,8 @@
     async init() {
       this.addSendFormListeners();
       this.addSearchFormListeners();
+
+      this.addSocketEventsListeners();
 
       this.fetchMe();
 
@@ -114,6 +116,28 @@
       const resJSON = await fetchApi(`${appVariables.apiBaseUrl}/rooms`, 'POST', data);
       await this.fetchRooms();
       this.changeActiveRoom(resJSON.data);
+    }
+
+    processNewMessage(message) {
+      const roomIndex = this.rooms.findIndex((r) => r.id === message.room);
+      if (roomIndex !== -1) {
+        const room = this.rooms[roomIndex];
+        this.rooms.splice(roomIndex, 1);
+        this.rooms.splice(0, 0, {
+          ...room,
+          lastMessage: message,
+        });
+        this.renderRooms();
+      }
+      if (this.activeRoom !== null && message.room === this.activeRoom.id) {
+        this.activeRoomMessages.push(message);
+        this.renderActiveRoomMessages();
+      }
+    }
+
+    processNewRoom(room) {
+      this.rooms.splice(0, 0, room);
+      this.renderRooms();
     }
 
     // --- HELPERS ---
@@ -219,9 +243,23 @@
       this.domElements.searchFormTextInput.addEventListener('keyup', this.searchFormTextInputOnKeyup);
     }
 
+    addSocketEventsListeners() {
+      if (socket === undefined) {
+        console.error('socket.io not initialized.');
+        return;
+      }
+
+      socket.on('message:create', (message) => {
+        this.processNewMessage(message);
+      });
+      socket.on('room:create', (room) => {
+        this.processNewRoom(room);
+      });
+    }
+
     // --- RENDERS ---
 
-    async renderRooms() {
+    renderRooms() {
       let html = '';
 
       if (this.rooms.length > 0) {
@@ -236,7 +274,7 @@
       updateAvatars();
     }
 
-    async renderSearchResults() {
+    renderSearchResults() {
       if (!this.isSearchMode) {
         return;
       }
@@ -254,14 +292,16 @@
       updateAvatars();
     }
 
-    renderActiveRoom() {
+    async renderActiveRoom() {
       if (this.activeRoom === null) {
         // IDEA: render overlay?
         return;
       }
       this.renderActiveRoomHeader();
-      this.renderActiveRoomMessages();
       this.renderActiveRoomSendForm();
+
+      await this.fetchActiveRoomMessages(this.activeRoom.id);
+      this.renderActiveRoomMessages();
     }
 
     renderActiveRoomHeader() {
@@ -269,10 +309,8 @@
       updateAvatars();
     }
 
-    async renderActiveRoomMessages() {
+    renderActiveRoomMessages() {
       let html = '';
-
-      await this.fetchActiveRoomMessages(this.activeRoom.id);
 
       if (this.activeRoomMessages.length > 0) {
         html = this.activeRoomMessages

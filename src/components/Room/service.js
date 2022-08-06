@@ -42,6 +42,13 @@ function findByUsers(users) {
     .exec();
 }
 
+function findById(roomId, select) {
+  return RoomModel
+    .findById(roomId)
+    .select(select)
+    .exec();
+}
+
 function findByIdForUser(user, roomId) {
   return RoomModel
     .findOne({ _id: roomId, users: user })
@@ -61,5 +68,6 @@ module.exports = {
   create,
   findAllForUser,
   findByUsers,
+  findById,
   findByIdForUser,
 };

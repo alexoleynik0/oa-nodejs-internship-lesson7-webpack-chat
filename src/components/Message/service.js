@@ -5,7 +5,7 @@ async function create(roomId, user, text) {
   const message = await MessageModel
     .create({
       room: roomId,
-      user,
+      user: user.id,
       text,
     });
 

@@ -1,5 +1,7 @@
 const { checkResourceIsFound } = require('../../helpers/http/restResponse');
+const { socketEmitToRoom } = require('../../helpers/socket-io');
 const MessageService = require('./service');
+const RoomService = require('../Room/service');
 
 async function create(req, res) {
   const { roomId, text } = req.body;
@@ -9,6 +11,9 @@ async function create(req, res) {
   }
 
   const message = await MessageService.create(roomId, user, text);
+
+  const room = await RoomService.findById(roomId, 'users');
+  socketEmitToRoom(room.users.map((u) => u.toString()), 'message:create', message);
 
   res.status(201).json({
     data: message.id,

@@ -1,5 +1,5 @@
 const { checkResourceIsFound } = require('../../helpers/http/restResponse');
-const { socketEmitToRoom } = require('../../helpers/socket-io');
+const { socketEmitToRoom } = require('../../config/webSockets');
 const MessageService = require('./service');
 const RoomService = require('../Room/service');
 

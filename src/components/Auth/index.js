@@ -50,6 +50,8 @@ async function getNewAccessAndRefreshToken(req, res) {
   const user = await AuthService.getUserUsingRefreshToken(userId, oldRefreshToken);
   checkUserIsAuth(user, 'Can\'t find provided refresh token.');
 
+  setAuthCookie(res);
+
   res.status(200).json({
     userId: user.id,
     ...(await getUserAccessAndRefreshTokens(user, req)),

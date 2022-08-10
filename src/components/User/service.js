@@ -19,7 +19,7 @@ function findByQuery(query, limit) {
       },
       { score: { $meta: 'textScore' } },
     )
-    .select({ _id: 1, nickname: 1 })
+    .select({ _id: 1, nickname: 1, lastActivityAt: 1 })
     .sort({ score: { $meta: 'textScore' } })
     .limit(limit)
     .exec();
@@ -76,7 +76,7 @@ function create(profile) {
  * @param {string} _id
  * @param {object} newProfile
  * @summary update a user's profile
- * @returns {Promise<void>}
+ * @returns {Promise<UserModel>}
  */
 function updateById(_id, newProfile) {
   return UserModel.findOneAndUpdate({ _id }, newProfile, { new: true }).exec();
@@ -93,6 +93,17 @@ function deleteById(_id) {
   return UserModel.findOneAndDelete({ _id }).exec();
 }
 
+/**
+ * @exports
+ * @method findByIds
+ * @param {array} ids
+ * @summary get user array
+ * @returns {Promise<UserModel[]>}
+ */
+function updateLastActivityById(id) {
+  return UserModel.updateOne({ _id: id }, { lastActivityAt: Date.now() }).exec();
+}
+
 module.exports = {
   findByQuery,
   findById,
@@ -101,4 +112,5 @@ module.exports = {
   create,
   updateById,
   deleteById,
+  updateLastActivityById,
 };

@@ -27,7 +27,7 @@ function findAllForUser(user) {
     .populate([{
       path: 'users',
       match: { _id: { $ne: user.id } },
-      select: 'nickname photoUrl',
+      select: 'nickname photoUrl lastActivityAt',
     }, {
       path: 'lastMessage',
       select: 'text',
@@ -57,7 +57,7 @@ function findByIdForUser(user, roomId) {
     .populate([{
       path: 'users',
       match: { _id: { $ne: user.id } },
-      select: 'nickname photoUrl',
+      select: 'nickname photoUrl lastActivityAt',
     }, {
       path: 'messagesCount',
     }])

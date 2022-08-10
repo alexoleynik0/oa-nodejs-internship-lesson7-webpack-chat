@@ -26,6 +26,10 @@ const schema = new Schema(
       select: false,
     },
 
+    lastActivityAt: {
+      type: Date,
+    },
+
     // relations
     rooms: [{ type: Schema.Types.ObjectId, ref: 'RoomModel' }],
   },
@@ -40,6 +44,14 @@ schema.index(
   { nickname: 'text', fullName: 'text' },
   { name: 'nickname_text_fullName_text', weights: { nickname: 10, fullName: 5 } },
 );
+
+const ONLINE_STILL_AFTER_MILLISECONDS = 120 * 1000; // 2m IDEA: move to env ?
+schema.virtual('online').get(function () {
+  if (this.lastActivityAt === undefined) {
+    return false;
+  }
+  return Date.now() - this.lastActivityAt.getTime() < ONLINE_STILL_AFTER_MILLISECONDS;
+});
 
 modifyMongooseSchema(schema);
 

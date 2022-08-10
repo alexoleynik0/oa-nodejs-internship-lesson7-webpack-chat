@@ -1,7 +1,7 @@
 const { checkResourceIsFound } = require('../../helpers/http/restResponse');
+const { socketEmitToRoom } = require('../../config/webSockets');
 const RoomService = require('./service');
 const UserService = require('../User/service');
-const { socketEmitToRoom } = require('../../helpers/socket-io');
 
 async function create(req, res) {
   const { userId } = req.body;

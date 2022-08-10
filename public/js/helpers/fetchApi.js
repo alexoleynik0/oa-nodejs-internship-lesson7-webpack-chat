@@ -1,4 +1,4 @@
-/* global appLocalStorage appNotification appVariables */
+/* global appLocalStorage appNotification appVariables socket */
 
 {
   const errorCodeToTitle = (errorCode) => (({
@@ -21,6 +21,17 @@
     const html = `<ul>${liArr.join('')}</ul>`;
 
     appNotification.error(title, html);
+  };
+
+  const processResponseLogin = (resJSON) => {
+    appLocalStorage.setItem('userId', resJSON.userId);
+    appLocalStorage.setItem('accessToken', resJSON.accessToken);
+    appLocalStorage.setItem('refreshToken', resJSON.refreshToken);
+  };
+  const processResponseLogout = () => {
+    appLocalStorage.removeItem('userId');
+    appLocalStorage.removeItem('accessToken');
+    appLocalStorage.removeItem('refreshToken');
   };
 
   const retryFetchAfterTokenRefresh = async (url, method, data, retryLimit) => {
@@ -81,6 +92,7 @@
     const resContentLength = parseInt(response.headers.get('Content-Length'), 10)
       || (response.status === 204 ? 0 : 1);
 
+    // IDEA: add Content-Type check
     // parses JSON response into native JavaScript objects
     const resJSON = resContentLength > 0 ? await response.json() : {};
 
@@ -88,8 +100,13 @@
       // if status not 'ok' (not in 200-299 range)
       // default error interceptor (kind of)
 
-      if (response.status === 401 && url.indexOf('/login') === -1) {
-        return retryFetchAfterTokenRefresh(url, method, data, retryLimit - 1);
+      if (response.status === 401) {
+        if (url === `${appVariables.apiBaseUrl}/auth/token`) {
+          return processResponseLogout();
+        }
+        if (url !== `${appVariables.apiBaseUrl}/auth/login`) {
+          return retryFetchAfterTokenRefresh(url, method, data, retryLimit - 1);
+        }
       }
 
       if (typeof resJSON.details === 'string') {
@@ -107,20 +124,50 @@
 
     // add accessToken on success login
     if (resJSON.accessToken !== undefined) {
-      appLocalStorage.setItem('userId', resJSON.userId);
-      appLocalStorage.setItem('accessToken', resJSON.accessToken);
-      appLocalStorage.setItem('refreshToken', resJSON.refreshToken);
+      processResponseLogin(resJSON);
+
+      if (window.socket !== undefined) {
+        socket.emit('auth:reconnect', resJSON.accessToken);
+      }
     }
 
     // remove accessToken on logout
-    if (resContentLength === 0 && url.indexOf('/logout') > -1) {
-      appLocalStorage.removeItem('userId');
-      appLocalStorage.removeItem('accessToken');
-      appLocalStorage.removeItem('refreshToken');
+    if (url === `${appVariables.apiBaseUrl}/auth/logout`) {
+      processResponseLogout();
     }
 
     return resJSON;
   };
 
+  const fetchSocket = (eventName, ...args) => new Promise((resolve, reject) => {
+    socket.emit(eventName, ...args, async (error, resJSON) => {
+      if (error !== null) {
+        if (error.statusCode === 401) { // TODO: test it
+          // HACK: to refetch user's Access Token and retry current request
+          await fetchApi(`${appVariables.apiBaseUrl}/users/me`);
+
+          return fetchSocket(eventName, ...args)
+            .then(resolve)
+            .catch(reject);
+        }
+
+        const errorResJSON = {
+          message: error.name,
+          details: error.message,
+        };
+        if (typeof errorResJSON.details === 'string') {
+          processSimpleError(errorResJSON);
+        } else if (typeof errorResJSON.details === 'object' && errorResJSON.details.length !== undefined) {
+          processValidationError(errorResJSON);
+        }
+
+        // IDEA: add resJSON to error?
+        return reject(error);
+      }
+      return resolve(resJSON);
+    });
+  });
+
   window.fetchApi = fetchApi;
+  window.fetchSocket = fetchSocket;
 }

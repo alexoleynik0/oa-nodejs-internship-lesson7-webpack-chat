@@ -1,7 +1,12 @@
+const { unsetAuthCookie } = require('../../components/Auth/helpers/cookie');
 const AuthError = require('../../error/AuthError');
 const ResponseError = require('../../error/ResponseError');
 
 module.exports = (error, req, res, next) => {
+  if (error instanceof AuthError) {
+    unsetAuthCookie(res);
+  }
+
   if (!req.xhr && error instanceof AuthError) {
     res.redirect('/login');
 

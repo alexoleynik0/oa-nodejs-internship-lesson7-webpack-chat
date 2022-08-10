@@ -1,6 +1,6 @@
 const http = require('http');
-const { socketConnection } = require('../helpers/socket-io');
 require('./dotenv');
+const { socketConnection } = require('../config/webSockets');
 const events = require('./events');
 const server = require('./server');
 

@@ -1,5 +1,5 @@
 const { Schema } = require('mongoose');
-const mongooseConnection = require('../../../config/connection');
+const mongooseConnection = require('../../../config/mongooseConnection');
 const modifyMongooseSchema = require('../../../helpers/db/modifyMongooseSchema');
 
 const COLLECTION_NAME = 'refresh_tokens';

@@ -1,7 +1,7 @@
-function dialogsPage(_req, res) {
+function chatPage(_req, res) {
   res.render('pages/chat.ejs');
 }
 
 module.exports = {
-  dialogsPage,
+  chatPage,
 };

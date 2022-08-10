@@ -16,7 +16,7 @@ const router = Router();
 router.get(
   '/',
   isAuthFrontend,
-  ChatController.dialogsPage,
+  ChatController.chatPage,
 );
 
 /**

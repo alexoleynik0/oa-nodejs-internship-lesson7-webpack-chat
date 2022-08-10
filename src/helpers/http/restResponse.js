@@ -8,7 +8,7 @@ function checkResourceIsFound(resource, errorMessage) {
 }
 
 function checkUserIsAuth(user, errorMessage) {
-  if (user === null) {
+  if (user === null || user === undefined) {
     throw new AuthError(errorMessage);
   }
 }

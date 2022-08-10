@@ -1,8 +1,8 @@
 <%- include(views_path + 'partials/layout/_header.ejs', { title: 'Rooms - ' +
-appName, scripts: [{src: '/static/js/helpers/avatars.js', attributes:
-'defer'}, {src: '/static/js/components/chat/chatHtmlGenerators.js', attributes:
-'defer'}, {src: '/static/js/components/chat/chat.js', attributes:
-'defer'}, {src: '/static/js/pages/chat.js', attributes: 'defer'}] }); -%>
+appName, scripts: [{src: '/static/js/helpers/avatars.js', attributes: 'defer'},
+{src: '/static/js/components/chat/chatHtmlGenerators.js', attributes: 'defer'},
+{src: '/static/js/components/chat/chat.js', attributes: 'defer'}, {src:
+'/static/js/pages/chat.js', attributes: 'defer'}] }); -%>
 
 <div class="chat-page-container container clearfix">
   <div class="chat-side-nav">
@@ -33,7 +33,7 @@ appName, scripts: [{src: '/static/js/helpers/avatars.js', attributes:
 
     <form id="chat-room-send-form" class="chat-message clearfix">
       <textarea name="text" placeholder="Type your message" rows="3"></textarea>
-      <button type="submit">Send</button>
+      <button type="submit" title="Or click CTRL/CMD + Enter">Send</button>
     </form>
     <!-- end chat-message -->
   </div>

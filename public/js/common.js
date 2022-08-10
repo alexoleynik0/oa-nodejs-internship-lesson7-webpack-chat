@@ -19,11 +19,15 @@
   formLogout?.addEventListener('submit', formLogoutOnSubmit);
 }
 
-if (appLocalStorage.getItem('userId')) {
+if (appLocalStorage.getItem('accessToken')) {
   const socket = io({
-    query: {
-      roomName: appLocalStorage.getItem('userId'),
+    extraHeaders: {
+      Authorization: `Bearer ${appLocalStorage.getItem('accessToken')}`,
     },
+  });
+
+  socket.on('auth:access-token-expired', () => {
+    // TODO: add logic
   });
 
   window.socket = socket;

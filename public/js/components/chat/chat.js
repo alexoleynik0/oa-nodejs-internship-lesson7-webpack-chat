@@ -1,4 +1,4 @@
-/* global debounce appVariables fetchApi ChatHtmlGenerators updateAvatars socket */
+/* global debounce appVariables fetchApi fetchSocket ChatHtmlGenerators updateAvatars socket */
 
 {
   class ChatComponent {
@@ -25,6 +25,8 @@
       searchForm: null,
     };
 
+    socket = null;
+
     constructor(roomsList, roomHeader, messagesList, sendForm, searchForm) {
       this.domElements.roomsList = roomsList;
       this.domElements.roomHeader = roomHeader;
@@ -42,9 +44,9 @@
       this.addSendFormListeners();
       this.addSearchFormListeners();
 
-      this.addSocketEventsListeners();
+      this.initSocket();
 
-      this.fetchMe();
+      await this.fetchMe();
 
       await this.fetchRooms();
       this.renderRooms();
@@ -140,6 +142,26 @@
       this.renderRooms();
     }
 
+    processUserOnlineChange(userId, online) {
+      let userIndex = -1;
+      this.rooms = this.rooms.map((room) => {
+        userIndex = room.users.findIndex((user) => user.id === userId);
+        if (userIndex === -1) {
+          return room;
+        }
+
+        room.users.splice(userIndex, 1, {
+          ...room.users[userIndex],
+          online,
+        });
+
+        return {
+          ...room,
+        };
+      });
+      this.renderRooms();
+    }
+
     // --- HELPERS ---
 
     getUserOfMessage(message) {
@@ -147,24 +169,56 @@
       return user !== undefined ? user : this.me;
     }
 
+    setRoomVirtualProperties(room) {
+      const isActiveRoom = room.isActiveRoom
+        ?? (this.activeRoom !== null && this.activeRoom.id === room.id);
+
+      const usersOnlineCount = room.users.reduce(
+        (acc, user) => acc + (user.online ? 1 : 0),
+        0,
+      );
+
+      // NOTE: room is considered "online" if at least half the users (-1 self) are online
+      const roomOnline = usersOnlineCount > room.users.length / 2;
+
+      const somebodyTyping = null;
+
+      return {
+        ...room,
+        isActiveRoom,
+        roomOnline,
+        somebodyTyping,
+      };
+    }
+
+    setRoomsVirtualProperties() {
+      this.rooms = this.rooms.map(this.setRoomVirtualProperties.bind(this));
+    }
+
     // --- FETCHES ---
 
     async fetchMe() {
-      const resJSON = await fetchApi(`${appVariables.apiBaseUrl}/users/me`);
+      const resJSON = (this.socket !== null)
+        ? await fetchSocket('user:get-me')
+        : await fetchApi(`${appVariables.apiBaseUrl}/users/me`);
       this.me = resJSON.data;
     }
 
     async fetchRooms() {
+      // TODO: use fetchSocket
       const resJSON = await fetchApi(`${appVariables.apiBaseUrl}/rooms`);
       this.rooms = resJSON.data;
     }
 
     async fetchActiveRoom(roomId) {
+      // TODO: use fetchSocket
       const resJSON = await fetchApi(`${appVariables.apiBaseUrl}/rooms/${roomId}`);
-      this.activeRoom = resJSON.data;
+      resJSON.data.isActiveRoom = true;
+      this.activeRoom = this.setRoomVirtualProperties(resJSON.data);
     }
 
     async fetchActiveRoomMessages(roomId) {
+      // TODO: use fetchSocket
       const resJSON = await fetchApi(`${appVariables.apiBaseUrl}/messages/room/${roomId}`);
       this.activeRoomMessages = resJSON.data;
     }
@@ -174,6 +228,13 @@
     roomsListItemOnClick = (e) => {
       const item = e.target;
       this.changeActiveRoom(item.dataset.roomId);
+
+      // visual
+      const items = item.parentElement.children;
+      for (let i = 0; i < items.length; i += 1) {
+        items[i].classList.remove('active');
+      }
+      item.classList.add('active');
     };
 
     addRoomsListeners() {
@@ -205,7 +266,7 @@
     removeSearchResultsListeners() {
       const roomsListItems = document.querySelectorAll('.chat-rooms-list-item');
       roomsListItems.forEach((roomsListItem) => {
-        roomsListItem.removeEventListener('click', this.roomsListItemOnClick);
+        roomsListItem.removeEventListener('click', this.searchResultsListItemOnClick);
       });
     }
 
@@ -243,26 +304,45 @@
       this.domElements.searchFormTextInput.addEventListener('keyup', this.searchFormTextInputOnKeyup);
     }
 
-    addSocketEventsListeners() {
-      if (socket === undefined) {
-        console.error('socket.io not initialized.');
+    initSocket() {
+      if (typeof socket === 'undefined') {
+        console.error('socket.io not initialized. REST API will be used.');
+        this.addPseudoSocketEventsListeners();
         return;
       }
+      this.socket = socket;
+      this.addSocketEventsListeners();
+    }
 
-      socket.on('message:create', (message) => {
+    addSocketEventsListeners() {
+      this.socket.on('message:create', (message) => {
         this.processNewMessage(message);
       });
-      socket.on('room:create', (room) => {
+      this.socket.on('room:create', (room) => {
         this.processNewRoom(room);
       });
+      this.socket.on('user:online', (userId) => {
+        this.processUserOnlineChange(userId, true);
+      });
+      this.socket.on('user:offline', (userId) => {
+        this.processUserOnlineChange(userId, false);
+      });
+    }
+
+    addPseudoSocketEventsListeners() {
+      // TODO: add polling for new messages and other events ?
     }
 
     // --- RENDERS ---
 
     renderRooms() {
+      if (this.isSearchMode) {
+        return;
+      }
       let html = '';
 
       if (this.rooms.length > 0) {
+        this.setRoomsVirtualProperties();
         html = this.rooms.map(ChatHtmlGenerators.roomListItemHTML).join('');
       } else {
         html = '<li>Your rooms list is empty.<br />Search for a friend and create one!</li>';

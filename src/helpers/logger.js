@@ -1,11 +1,14 @@
 const path = require('path');
 const winston = require('winston');
 
+// TODO: make it fly
+// NOTE: this works like shit somehow..
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.json(),
+    winston.format.errors({ stack: true }),
   ),
   defaultMeta: { },
   transports: [

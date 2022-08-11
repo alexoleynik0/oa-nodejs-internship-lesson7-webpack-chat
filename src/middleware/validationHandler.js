@@ -37,14 +37,7 @@ const resolveAsyncRules = async (value) => {
   }
 };
 
-const validateData = (data) => (
-  schema,
-  validationOptions = DEFAULT_VALIDATION_OPTIONS,
-) => async (
-  _req,
-  _res,
-  next,
-) => {
+const validatePlainData = async (schema, validationOptions, next, data) => {
   try {
     // NOTE: value can contain pending promises
     const value = await schema.validateAsync(data, validationOptions);
@@ -58,6 +51,15 @@ const validateData = (data) => (
   }
   return next();
 };
+
+const validateData = (data) => (
+  schema,
+  validationOptions = DEFAULT_VALIDATION_OPTIONS,
+) => async (
+  _req,
+  _res,
+  next,
+) => validatePlainData(schema, validationOptions, next, data);
 
 const validateAny = (
   schema,
@@ -82,9 +84,26 @@ const validateBody = (
   validationOptions,
 ) => async (req, res, next) => validateData(req.body)(schema, validationOptions)(req, res, next);
 
+const validateSocketData = (
+  schema,
+  validationOptions = DEFAULT_VALIDATION_OPTIONS,
+) => async (
+  data,
+) => {
+  let validationError;
+  const next = (error) => {
+    validationError = error;
+  };
+  await validatePlainData(schema, validationOptions, next, data);
+  if (validationError !== undefined) {
+    throw validationError;
+  }
+};
+
 module.exports = {
   validateAny,
   validateParams,
   validateQuery,
   validateBody,
+  validateSocketData,
 };

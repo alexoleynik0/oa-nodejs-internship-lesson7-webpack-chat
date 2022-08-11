@@ -127,7 +127,8 @@
       processResponseLogin(resJSON);
 
       if (window.socket !== undefined) {
-        socket.emit('auth:reconnect', resJSON.accessToken);
+        const authData = { accessToken: resJSON.accessToken };
+        socket.emit('auth:reconnect', authData);
       }
     }
 

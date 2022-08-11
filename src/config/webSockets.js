@@ -1,12 +1,13 @@
 const { Server: SocketIoServer } = require('socket.io');
-const SocketComponent = require('../components/Socket');
 
 let io;
 
 const socketConnection = (httpServer) => {
   io = new SocketIoServer(httpServer);
 
-  io.on('connection', SocketComponent.connection);
+  // TODO: more this to imports (low priority?)
+  // eslint-disable-next-line global-require
+  io.on('connection', require('../components/Socket').connection);
 };
 
 const socketEmitToAll = (key, message) => { io.emit(key, message); };

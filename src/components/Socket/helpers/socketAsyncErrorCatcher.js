@@ -25,9 +25,9 @@ const socketAsyncErrorCatcher = (action) => async (...args) => {
       if (callback !== undefined) {
         callback(fakeError);
       }
-      // TODO: think on it, add traceID (user.id)
       // NOTE: if not an acknowledgement - log error
-      logger.error(error); // TODO: fix `undefined` log output
+      // TODO: add traceID (user.id)
+      logger.error(error);
     }
   }
 };

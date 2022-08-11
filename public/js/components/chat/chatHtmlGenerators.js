@@ -22,7 +22,6 @@
     }
 
     static roomListItemHTML(room) {
-      console.log(room.users[0]?.nickname, room.isActiveRoom);
       return `
 <li class="clearfix chat-rooms-list-item ${room.isActiveRoom ? 'active' : ''}" data-room-id="${room.id}">
   ${ChatHtmlGenerators.userAvatarHTML(room.users[0] || room.creator, 55)}

@@ -76,11 +76,11 @@
       if (this.activeRoom === null || this.domElements.sendFormTextInput.value.length === 0) {
         return;
       }
-      const data = {
+      const createData = {
         roomId: this.activeRoom.id,
         text: this.domElements.sendFormTextInput.value,
       };
-      fetchApi(`${appVariables.apiBaseUrl}/messages`, 'POST', data);
+      this.fetchCreateMessage(createData);
       this.domElements.sendFormTextInput.value = '';
     }
 
@@ -99,10 +99,10 @@
 
       this.isSearchMode = true;
 
-      const data = {
+      const getData = {
         query: this.domElements.searchFormTextInput.value,
       };
-      fetchApi(`${appVariables.apiBaseUrl}/users`, 'GET', data)
+      this.fetchUsers(getData)
         .then((resJSON) => {
           this.searchResults = resJSON.data;
           this.renderSearchResults();
@@ -112,15 +112,16 @@
     doSearchDebounced = debounce(this.doSearch, 500);
 
     async createRoom(userId) {
-      const data = {
+      const createData = {
         userId,
       };
-      const resJSON = await fetchApi(`${appVariables.apiBaseUrl}/rooms`, 'POST', data);
+      const resJSON = await this.fetchCreateRoom(createData);
       await this.fetchRooms();
       this.changeActiveRoom(resJSON.data);
     }
 
     processNewMessage(message) {
+      // move message.room to the top in the list
       const roomIndex = this.rooms.findIndex((r) => r.id === message.room);
       if (roomIndex !== -1) {
         const room = this.rooms[roomIndex];
@@ -131,6 +132,7 @@
         });
         this.renderRooms();
       }
+      // add to activeRoomMessages if the room is active
       if (this.activeRoom !== null && message.room === this.activeRoom.id) {
         this.activeRoomMessages.push(message);
         this.renderActiveRoomMessages();
@@ -169,9 +171,8 @@
       return user !== undefined ? user : this.me;
     }
 
-    setRoomVirtualProperties(room) {
-      const isActiveRoom = room.isActiveRoom
-        ?? (this.activeRoom !== null && this.activeRoom.id === room.id);
+    setRoomVirtualProperties(room, rewriteProperties = {}) {
+      const isActiveRoom = this.activeRoom !== null && this.activeRoom.id === room.id;
 
       const usersOnlineCount = room.users.reduce(
         (acc, user) => acc + (user.online ? 1 : 0),
@@ -188,6 +189,7 @@
         isActiveRoom,
         roomOnline,
         somebodyTyping,
+        ...rewriteProperties,
       };
     }
 
@@ -199,28 +201,51 @@
 
     async fetchMe() {
       const resJSON = (this.socket !== null)
-        ? await fetchSocket('user:get-me')
+        ? await fetchSocket('users:get-me')
         : await fetchApi(`${appVariables.apiBaseUrl}/users/me`);
       this.me = resJSON.data;
     }
 
+    async fetchUsers(getData) {
+      if (this.socket !== null) {
+        return fetchSocket('users:find-all', getData);
+      }
+      return fetchApi(`${appVariables.apiBaseUrl}/users`, 'GET', getData);
+    }
+
     async fetchRooms() {
-      // TODO: use fetchSocket
-      const resJSON = await fetchApi(`${appVariables.apiBaseUrl}/rooms`);
+      const resJSON = (this.socket !== null)
+        ? await fetchSocket('rooms:find-all')
+        : await fetchApi(`${appVariables.apiBaseUrl}/rooms`);
       this.rooms = resJSON.data;
     }
 
     async fetchActiveRoom(roomId) {
-      // TODO: use fetchSocket
-      const resJSON = await fetchApi(`${appVariables.apiBaseUrl}/rooms/${roomId}`);
-      resJSON.data.isActiveRoom = true;
-      this.activeRoom = this.setRoomVirtualProperties(resJSON.data);
+      const resJSON = (this.socket !== null)
+        ? await fetchSocket('rooms:find-by-id', { roomId })
+        : await fetchApi(`${appVariables.apiBaseUrl}/rooms/${roomId}`);
+      this.activeRoom = this.setRoomVirtualProperties(resJSON.data, { isActiveRoom: true });
     }
 
     async fetchActiveRoomMessages(roomId) {
-      // TODO: use fetchSocket
-      const resJSON = await fetchApi(`${appVariables.apiBaseUrl}/messages/room/${roomId}`);
+      const resJSON = (this.socket !== null)
+        ? await fetchSocket('messages:find-all-by-room-id', { roomId })
+        : await fetchApi(`${appVariables.apiBaseUrl}/messages/room/${roomId}`);
       this.activeRoomMessages = resJSON.data;
+    }
+
+    async fetchCreateRoom(createData) {
+      if (this.socket !== null) {
+        return fetchSocket('rooms:create', createData);
+      }
+      return fetchApi(`${appVariables.apiBaseUrl}/rooms`, 'POST', createData);
+    }
+
+    async fetchCreateMessage(createData) {
+      if (this.socket !== null) {
+        return fetchSocket('messages:create', createData);
+      }
+      return fetchApi(`${appVariables.apiBaseUrl}/messages`, 'POST', createData);
     }
 
     // --- LISTENERS ---

@@ -251,8 +251,8 @@ input:focus-within:invalid {
 
 .chat .chat-header .avatar + .status {
   position: absolute;
-  top: 44px;
-  left: 45px;
+  top: 64px;
+  left: 65px;
 }
 
 .chat .chat-header .chat-about {

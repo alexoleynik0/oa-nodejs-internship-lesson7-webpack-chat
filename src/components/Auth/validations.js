@@ -22,7 +22,7 @@ const rules = {
   refreshToken: validator.string(),
 };
 
-module.exports = {
+const AuthValidations = {
   create: validator.object().keys({
     nickname: rules.nickname.required(),
     password: rules.password.required(),
@@ -36,3 +36,5 @@ module.exports = {
     oldRefreshToken: rules.refreshToken.required(),
   }),
 };
+
+module.exports = AuthValidations;

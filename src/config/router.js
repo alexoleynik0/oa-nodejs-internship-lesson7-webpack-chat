@@ -1,12 +1,12 @@
 const path = require('path');
 const { Router, static: expressStatic } = require('express');
-const AuthRouter = require('../components/Auth/router');
+const AuthHttpRouter = require('../components/Auth/http/router');
 const FrontendRouter = require('../components/Frontend/router');
 const isAuthUser = require('../middleware/isAuthUser');
+const MessageHttpRouter = require('../components/Message/http/router');
+const RoomHttpRouter = require('../components/Room/http/router');
 const RouteNotFoundError = require('../error/RouteNotFoundError');
-const MessageRouter = require('../components/Message/router');
-const RoomRouter = require('../components/Room/router');
-const UserRouter = require('../components/User/router');
+const UserHttpRouter = require('../components/User/http/router');
 
 const prepareApi = (app) => {
   // set trust proxy to be able to get user's IP address (for rate-limiter etc)
@@ -37,13 +37,13 @@ module.exports = {
 
     const router = Router();
 
-    router.use('/auth', AuthRouter);
+    router.use('/auth', AuthHttpRouter);
 
-    router.use('/users', isAuthUser, UserRouter);
+    router.use('/users', isAuthUser, UserHttpRouter);
 
-    router.use('/rooms', isAuthUser, RoomRouter);
+    router.use('/rooms', isAuthUser, RoomHttpRouter);
 
-    router.use('/messages', isAuthUser, MessageRouter);
+    router.use('/messages', isAuthUser, MessageHttpRouter);
 
     router.use(() => {
       throw new RouteNotFoundError();

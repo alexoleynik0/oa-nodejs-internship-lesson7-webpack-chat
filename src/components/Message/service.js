@@ -1,7 +1,7 @@
 const MessageModel = require('./models/messages');
 const RoomModel = require('../Room/models/rooms');
 
-async function create(roomId, user, text) {
+async function create(user, roomId, text) {
   const message = await MessageModel
     .create({
       room: roomId,
@@ -30,7 +30,9 @@ function findAllByRoomId(roomId, limit) {
     .exec();
 }
 
-module.exports = {
+const MessageService = {
   create,
   findAllByRoomId,
 };
+
+module.exports = MessageService;

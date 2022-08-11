@@ -2,6 +2,8 @@ function chatPage(_req, res) {
   res.render('pages/chat.ejs');
 }
 
-module.exports = {
+const ChatController = {
   chatPage,
 };
+
+module.exports = ChatController;

@@ -1,8 +1,8 @@
 const { Router } = require('express');
-const { validateQuery } = require('../../middleware/validationHandler');
-const asyncErrorCatcher = require('../../middleware/errorHandlers/asyncErrorCatcher');
-const UserComponent = require('.');
-const UserValidations = require('./validations');
+const { validateQuery } = require('../../../middleware/validationHandler');
+const asyncErrorCatcher = require('../../../middleware/errorHandlers/asyncErrorCatcher');
+const UserHttpRequests = require('.');
+const UserValidations = require('../validations');
 
 /**
  * Express router to mount user related functions on.
@@ -21,7 +21,7 @@ const router = Router();
  */
 router.get(
   '/me',
-  asyncErrorCatcher(UserComponent.getMe),
+  asyncErrorCatcher(UserHttpRequests.getMe),
 );
 
 /**
@@ -35,7 +35,7 @@ router.get(
 router.get(
   '/',
   validateQuery(UserValidations.findAll),
-  asyncErrorCatcher(UserComponent.findAll),
+  asyncErrorCatcher(UserHttpRequests.findAll),
 );
 
 module.exports = router;

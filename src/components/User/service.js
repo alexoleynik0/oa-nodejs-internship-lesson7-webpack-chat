@@ -104,7 +104,7 @@ function updateLastActivityById(id) {
   return UserModel.updateOne({ _id: id }, { lastActivityAt: Date.now() }).exec();
 }
 
-module.exports = {
+const UserService = {
   findByQuery,
   findById,
   findByIds,
@@ -114,3 +114,5 @@ module.exports = {
   deleteById,
   updateLastActivityById,
 };
+
+module.exports = UserService;

@@ -5,8 +5,10 @@ const rules = {
     .min(2).max(30),
 };
 
-module.exports = {
+const UserValidations = {
   findAll: validator.object().keys({
     query: rules.query.required(),
   }),
 };
+
+module.exports = UserValidations;

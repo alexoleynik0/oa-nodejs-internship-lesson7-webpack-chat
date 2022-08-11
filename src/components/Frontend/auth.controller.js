@@ -6,7 +6,9 @@ function loginPage(_req, res) {
   res.render('pages/login.ejs', { isLoginPage: true });
 }
 
-module.exports = {
+const AuthController = {
   registerPage,
   loginPage,
 };
+
+module.exports = AuthController;

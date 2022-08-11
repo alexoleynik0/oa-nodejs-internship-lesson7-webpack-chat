@@ -64,10 +64,12 @@ function findByIdForUser(user, roomId) {
     .exec();
 }
 
-module.exports = {
+const RoomService = {
   create,
   findAllForUser,
   findByUsers,
   findById,
   findByIdForUser,
 };
+
+module.exports = RoomService;

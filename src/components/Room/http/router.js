@@ -1,8 +1,8 @@
 const { Router } = require('express');
-const { validateBody, validateParams } = require('../../middleware/validationHandler');
-const asyncErrorCatcher = require('../../middleware/errorHandlers/asyncErrorCatcher');
-const RoomComponent = require('.');
-const RoomValidations = require('./validations');
+const { validateBody, validateParams } = require('../../../middleware/validationHandler');
+const asyncErrorCatcher = require('../../../middleware/errorHandlers/asyncErrorCatcher');
+const RoomHttpRequests = require('.');
+const RoomValidations = require('../validations');
 
 /**
  * Express router to mount auth related functions on.
@@ -16,7 +16,7 @@ const router = Router();
  */
 router.get(
   '/',
-  asyncErrorCatcher(RoomComponent.findAll),
+  asyncErrorCatcher(RoomHttpRequests.findAll),
 );
 
 /**
@@ -25,7 +25,7 @@ router.get(
 router.post(
   '/',
   validateBody(RoomValidations.create),
-  asyncErrorCatcher(RoomComponent.create),
+  asyncErrorCatcher(RoomHttpRequests.create),
 );
 
 /**
@@ -34,7 +34,7 @@ router.post(
 router.get(
   '/:roomId',
   validateParams(RoomValidations.findById),
-  asyncErrorCatcher(RoomComponent.findById),
+  asyncErrorCatcher(RoomHttpRequests.findById),
 );
 
 module.exports = router;

@@ -1,6 +1,6 @@
 const { default: validator, commonRules } = require('../../helpers/http/validator');
 
-module.exports = {
+const MessageValidations = {
   create: validator.object().keys({
     roomId: commonRules.id.required(),
     text: validator.string()
@@ -11,3 +11,5 @@ module.exports = {
     roomId: commonRules.id.required(),
   }),
 };
+
+module.exports = MessageValidations;

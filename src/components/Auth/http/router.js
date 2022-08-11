@@ -1,9 +1,9 @@
 const { Router } = require('express');
-const { validateBody } = require('../../middleware/validationHandler');
-const asyncErrorCatcher = require('../../middleware/errorHandlers/asyncErrorCatcher');
-const AuthComponent = require('.');
-const AuthValidations = require('./validations');
-const rateLimiterMiddleware = require('../../middleware/rateLimiterMiddleware');
+const { validateBody } = require('../../../middleware/validationHandler');
+const asyncErrorCatcher = require('../../../middleware/errorHandlers/asyncErrorCatcher');
+const AuthHttpRequests = require('.');
+const AuthValidations = require('../validations');
+const rateLimiterMiddleware = require('../../../middleware/rateLimiterMiddleware');
 
 /**
  * Express router to mount auth related functions on.
@@ -20,7 +20,7 @@ router.post(
   rateLimiterMiddleware('auth/register', { points: 1, duration: 2 }), // allow 1 request per 2 seconds
   validateBody(AuthValidations.create),
   validateBody(AuthValidations.createAsync),
-  asyncErrorCatcher(AuthComponent.registerUsingCredentials),
+  asyncErrorCatcher(AuthHttpRequests.registerUsingCredentials),
 );
 
 /**
@@ -30,7 +30,7 @@ router.post(
   '/login',
   rateLimiterMiddleware('auth/login', { points: 1, duration: 2 }), // allow 1 request per 2 seconds
   validateBody(AuthValidations.create),
-  asyncErrorCatcher(AuthComponent.loginUsingCredentials),
+  asyncErrorCatcher(AuthHttpRequests.loginUsingCredentials),
 );
 
 /**
@@ -39,7 +39,7 @@ router.post(
 router.post(
   '/token',
   validateBody(AuthValidations.refreshToken),
-  asyncErrorCatcher(AuthComponent.getNewAccessAndRefreshToken),
+  asyncErrorCatcher(AuthHttpRequests.getNewAccessAndRefreshToken),
 );
 
 /**
@@ -48,7 +48,7 @@ router.post(
 router.post(
   '/logout',
   validateBody(AuthValidations.refreshToken),
-  asyncErrorCatcher(AuthComponent.removeRefreshToken),
+  asyncErrorCatcher(AuthHttpRequests.removeRefreshToken),
 );
 
 /**
@@ -57,7 +57,7 @@ router.post(
 router.post(
   '/logout-everywhere',
   validateBody(AuthValidations.create),
-  asyncErrorCatcher(AuthComponent.removeAllRefreshTokens),
+  asyncErrorCatcher(AuthHttpRequests.removeAllRefreshTokens),
 );
 
 module.exports = router;

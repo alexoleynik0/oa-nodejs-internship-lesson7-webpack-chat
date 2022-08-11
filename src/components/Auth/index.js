@@ -1,19 +1,11 @@
 const { checkUserIsAuth } = require('../../helpers/http/restResponse');
-const { setAuthCookie, unsetAuthCookie } = require('./helpers/cookie');
 const AuthService = require('./service');
 
-function getRequestAdditionalData(req) {
-  return {
-    userAgent: req.headers['user-agent'],
-    ipAddress: req.ip,
-  };
-}
-
-async function getUserAccessAndRefreshTokens(user, req) {
+async function getUserAccessAndRefreshTokens(user, refreshTokenAdditionalData) {
   const accessToken = await AuthService.createAccessTokenForUser(user);
   const refreshToken = await AuthService.createRefreshTokenForUser(
     user,
-    getRequestAdditionalData(req),
+    refreshTokenAdditionalData,
   );
   return {
     accessToken,
@@ -21,69 +13,70 @@ async function getUserAccessAndRefreshTokens(user, req) {
   };
 }
 
-async function registerUsingCredentials(req, res) {
-  const user = await AuthService.createUser(req.body);
+async function registerUsingCredentials(createData, refreshTokenAdditionalData) {
+  const user = await AuthService.createUser(createData);
+  const { accessToken, refreshToken } = await getUserAccessAndRefreshTokens(
+    user,
+    refreshTokenAdditionalData,
+  );
 
-  setAuthCookie(res);
-
-  res.status(201).json({
-    userId: user.id,
-    ...(await getUserAccessAndRefreshTokens(user, req)),
-  });
+  return {
+    user,
+    accessToken,
+    refreshToken,
+  };
 }
 
-async function loginUsingCredentials(req, res) {
-  const { nickname, password } = req.body;
+async function loginUsingCredentials(nickname, password, refreshTokenAdditionalData) {
   const user = await AuthService.getUserByCredentials(nickname, password);
   checkUserIsAuth(user, 'Invalid credentials pair.');
 
-  setAuthCookie(res);
+  const { accessToken, refreshToken } = await getUserAccessAndRefreshTokens(
+    user,
+    refreshTokenAdditionalData,
+  );
 
-  res.status(200).json({
-    userId: user.id,
-    ...(await getUserAccessAndRefreshTokens(user, req)),
-  });
+  return {
+    user,
+    accessToken,
+    refreshToken,
+  };
 }
 
-async function getNewAccessAndRefreshToken(req, res) {
-  const { userId, oldRefreshToken } = req.body;
+async function getNewAccessAndRefreshToken(userId, oldRefreshToken, refreshTokenAdditionalData) {
   const user = await AuthService.getUserUsingRefreshToken(userId, oldRefreshToken);
   checkUserIsAuth(user, 'Can\'t find provided refresh token.');
 
-  setAuthCookie(res);
+  const { accessToken, refreshToken } = await getUserAccessAndRefreshTokens(
+    user,
+    refreshTokenAdditionalData,
+  );
 
-  res.status(200).json({
-    userId: user.id,
-    ...(await getUserAccessAndRefreshTokens(user, req)),
-  });
+  return {
+    user,
+    accessToken,
+    refreshToken,
+  };
 }
 
-async function removeRefreshToken(req, res) {
-  const { userId, oldRefreshToken } = req.body;
+async function removeRefreshToken(userId, oldRefreshToken) {
   const user = await AuthService.getUserUsingRefreshToken(userId, oldRefreshToken);
   checkUserIsAuth(user, 'Can\'t find provided refresh token.');
-
-  unsetAuthCookie(res);
-
-  res.status(204).end();
 }
 
-async function removeAllRefreshTokens(req, res) {
-  const { nickname, password } = req.body;
+async function removeAllRefreshTokens(nickname, password) {
   const user = await AuthService.getUserByCredentials(nickname, password);
   checkUserIsAuth(user, 'Invalid credentials pair.');
 
-  await AuthService.removeAllRefreshTokensForUser(user);
-
-  unsetAuthCookie(res);
-
-  res.status(204).end();
+  AuthService.removeAllRefreshTokensForUser(user);
 }
 
-module.exports = {
+const AuthComponent = {
   registerUsingCredentials,
   loginUsingCredentials,
   getNewAccessAndRefreshToken,
   removeRefreshToken,
   removeAllRefreshTokens,
 };
+
+module.exports = AuthComponent;

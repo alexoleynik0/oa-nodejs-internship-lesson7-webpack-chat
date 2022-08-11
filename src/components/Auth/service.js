@@ -3,10 +3,10 @@ const UserModel = require('../User/models/users');
 const RefreshTokenModel = require('./models/refresh_tokens');
 const { getPasswordHash, isPasswordCorrect } = require('./helpers/password');
 
-async function createUser(data) {
-  const passwordHash = await getPasswordHash(data.password);
+async function createUser(createData) {
+  const passwordHash = await getPasswordHash(createData.password);
   return UserModel.create({
-    ...data,
+    ...createData,
     passwordHash,
   });
 }
@@ -26,13 +26,13 @@ async function createAccessTokenForUser(user) {
   return jwtFacade.getAuthAccessJWT(user);
 }
 
-async function createRefreshTokenForUser(user, additionalData) {
+async function createRefreshTokenForUser(user, refreshTokenAdditionalData) {
   const token = await jwtFacade.getAuthRefreshJWT(user);
 
   const refreshTokenData = {
     userId: user.id,
     token,
-    ...additionalData,
+    ...refreshTokenAdditionalData,
   };
   await RefreshTokenModel.create(refreshTokenData);
 
@@ -65,7 +65,7 @@ async function removeAllRefreshTokensForUser(user) {
   }).exec();
 }
 
-module.exports = {
+const AuthService = {
   createUser,
   getUserByCredentials,
   createAccessTokenForUser,
@@ -73,3 +73,5 @@ module.exports = {
   getUserUsingRefreshToken,
   removeAllRefreshTokensForUser,
 };
+
+module.exports = AuthService;

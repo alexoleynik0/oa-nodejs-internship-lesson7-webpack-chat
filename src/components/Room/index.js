@@ -3,48 +3,35 @@ const { socketEmitToRoom } = require('../../config/webSockets');
 const RoomService = require('./service');
 const UserService = require('../User/service');
 
-async function create(req, res) {
-  const { userId } = req.body;
-  const user = await req.getAuthUser();
-  const users = await UserService.findByIds([user.id, userId]);
+async function create(creator, userId) {
+  const users = await UserService.findByIds([creator.id, userId]);
 
   let room = await RoomService.findByUsers(users); // NOTE: check if it exists
 
-  if (room === null) { // NOTE: if it's realy new Room - create
-    room = await RoomService.create(user, users);
+  if (room === null) { // NOTE: if it's really new Room - create
+    room = await RoomService.create(creator, users);
 
     socketEmitToRoom(room.users.map((u) => u.id.toString()), 'room:create', room);
   }
 
-  res.status(201).json({
-    data: room.id,
-  });
+  return room;
 }
 
-async function findAll(req, res) {
-  const user = await req.getAuthUser();
-
-  const rooms = await RoomService.findAllForUser(user);
-
-  res.status(200).json({
-    data: rooms,
-  });
+async function findAll(user) {
+  return RoomService.findAllForUser(user);
 }
 
-async function findById(req, res) {
-  const { roomId } = req.params;
-  const user = await req.getAuthUser();
-
+async function findById(user, roomId) {
   const room = await RoomService.findByIdForUser(user, roomId);
   checkResourceIsFound(room);
 
-  res.status(200).json({
-    data: room,
-  });
+  return room;
 }
 
-module.exports = {
+const RoomComponent = {
   create,
   findAll,
   findById,
 };
+
+module.exports = RoomComponent;

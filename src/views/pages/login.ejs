@@ -34,7 +34,7 @@
         type="password"
         name="password"
         placeholder="PIN"
-        autocomplete="off"
+        autocomplete="<%= isLoginPage ? 'off' : 'new-password' %>"
         minlength="4"
         maxlength="4"
         pattern="[0-9]*"

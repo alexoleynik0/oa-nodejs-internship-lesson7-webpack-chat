@@ -8,7 +8,8 @@ async function create(creator, users) {
     });
 
   users.forEach((user) => {
-    user.rooms.push(room);
+    // WARNING: not changing this from `room` to `room.id` caused me extra 2 hours of debug
+    user.rooms.push(room.id);
   });
   await Promise.all(
     users.map((user) => user.save()),

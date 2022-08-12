@@ -101,10 +101,10 @@
       // default error interceptor (kind of)
 
       if (response.status === 401) {
-        if (url === `${appVariables.apiBaseUrl}/auth/token`) {
+        if (url.indexOf(`${appVariables.apiBaseUrl}/auth/token`) > -1) {
           return processResponseLogout();
         }
-        if (url !== `${appVariables.apiBaseUrl}/auth/login`) {
+        if (url.indexOf(`${appVariables.apiBaseUrl}/auth/login`) === -1) {
           return retryFetchAfterTokenRefresh(url, method, data, retryLimit - 1);
         }
       }

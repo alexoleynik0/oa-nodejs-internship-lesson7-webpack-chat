@@ -1,9 +1,17 @@
 {
-  "name": "oa-nodejs-internship-lesson7-webpack-chat",
-  "version": "1.0.0",
-  "description": "",
+  "name": "oa-nodejs-internship-lesson7-websocket-chat",
+  "version": "1.1.0",
+  "description": "ExpressJS REST + WebSocket Chat",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexoleynik0/oa-nodejs-internship-lesson7-websocket-chat.git"
+  },
   "main": "src/server/index.js",
   "scripts": {
+    "migrateUp": "migrate-mongo up",
+    "migrateDown": "migrate-mongo down",
+    "migrateStatus": "migrate-mongo status",
+    "start": "node src/server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -23,7 +31,7 @@
     "jsonwebtoken": "8.5.1",
     "mongoose": "6.0.14",
     "normalize.css": "8.0.1",
-    "rate-limiter-flexible": "^2.3.8",
+    "rate-limiter-flexible": "2.3.8",
     "socket.io": "4.5.1",
     "winston": "3.8.1"
   },

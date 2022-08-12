@@ -34,6 +34,10 @@ async function userJoinRooms(socket, authData = {}) {
   const getAuthUser = async () => UserService.findById(payload.user.id);
 
   const user = await getAuthUser();
+  if (user === null) {
+    socket.emit('auth:access-token-expired');
+    return;
+  }
 
   const roomIds = user.rooms.map((roomId) => roomId.toString());
 

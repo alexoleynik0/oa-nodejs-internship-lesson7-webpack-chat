@@ -1,3 +1,4 @@
+const logger = require('../../helpers/logger');
 const AuthSocketRequests = require('../Auth/socket');
 const AuthSocketRouter = require('../Auth/socket/router');
 const MessageSocketRouter = require('../Message/socket/router');
@@ -7,7 +8,8 @@ const UserSocketRouter = require('../User/socket/router');
 // -- socket "ROUTER" --
 
 async function connection(socket) {
-  AuthSocketRequests.userJoinRooms(socket);
+  AuthSocketRequests.userJoinRooms(socket)
+    .catch(logger.error);
 
   // auth
   AuthSocketRouter.init(socket);
